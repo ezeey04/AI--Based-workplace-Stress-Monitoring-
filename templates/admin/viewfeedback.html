@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>View Feedback · Calmora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6FB;
+    --surface:#FFFFFF;
+    --ink:#2B2140;
+    --ink-soft:#6B5F82;
+    --teal:#6C3FC9;
+    --teal-dark:#4B2A94;
+    --sage:#B79CE8;
+    --sage-soft:#F0E9FB;
+    --coral:#E0457B;
+    --line:#E7DFF2;
+    --radius:18px;
+
+    --c1:#FF8B66; --c1-soft:#FFE8DE;
+    --c2:#1FB6A6; --c2-soft:#DBF6F1;
+    --c3:#F2B705; --c3-soft:#FDF0CC;
+    --c4:#D6398C; --c4-soft:#FBE1EE;
+    --c5:#3B6FD6; --c5-soft:#E2EAFB;
+    --c6:#7CB518; --c6-soft:#ECF6D8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none;color:inherit;}
+  a:focus-visible, button:focus-visible, input:focus-visible{ outline:3px solid var(--sage); outline-offset:2px; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    max-width:980px; margin:0 auto; padding:28px 24px 0;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; color:var(--teal-dark); }
+  .brand-mark{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--teal),var(--sage));
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand-mark svg{width:16px;height:16px;stroke:#fff;}
+  .back-link{
+    display:flex; align-items:center; gap:6px; font-size:14px; font-weight:500; color:var(--ink-soft);
+    padding:8px 14px; border-radius:999px; border:1px solid var(--line); background:none; cursor:pointer;
+    transition:color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .back-link:hover{ color:var(--teal); border-color:var(--sage); background:var(--sage-soft); }
+  .back-link svg{width:15px;height:15px;stroke:currentColor;}
+
+  main{ max-width:980px; margin:0 auto; padding:36px 24px 72px; }
+
+  .page-head h1{
+    font-family:'Fraunces',serif; font-weight:500; font-size:clamp(26px,4vw,34px);
+    margin:0 0 8px; color:var(--teal-dark);
+  }
+  .page-head p{ margin:0 0 26px; color:var(--ink-soft); font-size:15px; }
+
+  .toolbar{ margin-bottom:18px; }
+  .search-box{ position:relative; max-width:340px; }
+  .search-box svg{
+    position:absolute; left:13px; top:50%; transform:translateY(-50%);
+    width:16px;height:16px; stroke:var(--ink-soft); pointer-events:none;
+  }
+  .search-box input{
+    width:100%; padding:11px 14px 11px 38px;
+    border:1.5px solid var(--line); border-radius:999px;
+    font-family:inherit; font-size:14px; color:var(--ink); background:#fff;
+  }
+  .search-box input:focus{ border-color:var(--teal); outline:none; box-shadow:0 0 0 4px var(--sage-soft); }
+
+  .table-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  }
+  .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table{ width:100%; min-width:640px; border-collapse:collapse; }
+
+  thead th{
+    text-align:left; font-size:12.5px; font-weight:600; color:var(--ink-soft); background:var(--sage-soft);
+    padding:14px 18px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{
+    padding:14px 18px; font-size:14px; color:var(--ink);
+    border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr{ transition:background .15s ease; }
+  tbody tr:hover{ background:#FBF9FE; }
+  tbody tr.hidden-row{ display:none; }
+
+  .date-cell{ white-space:nowrap; font-variant-numeric:tabular-nums; color:var(--ink-soft); }
+  .feedback-text{ max-width:340px; line-height:1.5; }
+  .person{ font-weight:600; }
+
+  .empty-state{ text-align:center; padding:56px 24px; color:var(--ink-soft); }
+  .empty-state svg{ width:40px;height:40px; stroke:var(--sage); margin-bottom:14px; }
+  .empty-state p{ margin:0; font-size:14.5px; }
+
+  .no-results{ display:none; text-align:center; padding:40px 24px; color:var(--ink-soft); font-size:14.5px; }
+  .no-results.visible{ display:block; }
+
+  @media (max-width:700px){
+    table{ min-width:0; }
+    .table-scroll{ overflow-x:visible; }
+    thead{ display:none; }
+    table, tbody, tr, td{ display:block; width:100%; }
+    tbody tr{ border-bottom:1px solid var(--line); padding:14px 18px; }
+    tbody td{
+      border:none; padding:6px 0; display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+    }
+    tbody td::before{
+      content:attr(data-label); font-size:12px; font-weight:600; color:var(--ink-soft); flex:none;
+    }
+    .feedback-text{ max-width:60%; text-align:right; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .back-link, tbody tr{ transition:none; }
+  }
+
+  /* ---------- Fixed navbar (shared across pages) ---------- */
+  :root{ --navbar-h:64px; }
+  body{ padding-top:var(--navbar-h); }
+  .navbar{
+    background:var(--surface); border-bottom:1px solid var(--line);
+    position:fixed; top:0; left:0; right:0; width:100%;
+    height:var(--navbar-h); z-index:30;
+  }
+  .navbar .nav-inner{
+    max-width:1080px; margin:0 auto; padding:0 24px; height:var(--navbar-h);
+    display:flex; align-items:center; gap:22px;
+  }
+  .navbar .brand{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; color:var(--teal-dark); flex:none; }
+  .navbar .brand-mark{ width:30px;height:30px;border-radius:9px; background:linear-gradient(135deg,var(--teal),var(--sage)); display:flex;align-items:center;justify-content:center; }
+  .navbar .brand-mark svg{width:16px;height:16px;stroke:#fff;}
+  .nav-links{ display:flex; align-items:center; gap:4px; flex:1; overflow-x:auto; scrollbar-width:none; }
+  .nav-links::-webkit-scrollbar{ display:none; }
+  .nav-links a{ display:flex; align-items:center; gap:7px; font-size:13.5px; font-weight:600; color:var(--ink-soft); padding:8px 13px; border-radius:999px; white-space:nowrap; transition:background .15s ease, color .15s ease; }
+  .nav-links a svg{ width:14px;height:14px; stroke:currentColor; flex:none; }
+  .nav-links a:hover{ background:var(--sage-soft); color:var(--teal-dark); }
+  .nav-links a.active{ background:var(--sage-soft); color:var(--teal-dark); }
+  .admin-menu{ position:relative; flex:none; }
+  .admin-trigger{ display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line); padding:6px 12px 6px 6px; border-radius:999px; cursor:pointer; font-size:13.5px; font-weight:600; color:var(--ink); transition:border-color .15s ease, background .15s ease; }
+  .admin-trigger:hover, .admin-trigger[aria-expanded="true"]{ border-color:var(--teal); background:var(--sage-soft); }
+  .admin-avatar{ width:28px;height:28px;border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--sage)); display:flex;align-items:center;justify-content:center;flex:none; }
+  .admin-avatar svg{ width:16px;height:16px; stroke:#fff; }
+  .admin-trigger .chevron{ width:13px;height:13px; stroke:var(--ink-soft); transition:transform .18s ease; }
+  .admin-trigger[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+  .admin-dropdown{ position:absolute; top:calc(100% + 10px); right:0; min-width:200px; background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:0 18px 36px -18px rgba(75,42,148,.35); overflow:hidden; max-height:0; opacity:0; pointer-events:none; transform:translateY(-6px); transition:max-height .22s ease, opacity .18s ease, transform .18s ease; }
+  .admin-dropdown.open{ max-height:220px; opacity:1; pointer-events:auto; transform:translateY(0); overflow-y:auto; }
+  .admin-dropdown a{ display:flex; align-items:center; gap:10px; padding:12px 14px; font-size:14px; font-weight:500; color:var(--ink); border-bottom:1px solid var(--line); }
+  .admin-dropdown a:last-child{ border-bottom:none; }
+  .admin-dropdown a svg{ width:15px;height:15px; stroke:var(--teal); flex:none; }
+  .admin-dropdown a:hover{ background:var(--sage-soft); }
+  .admin-dropdown a.logout-item{ color:var(--coral); }
+  .admin-dropdown a.logout-item svg{ stroke:var(--coral); }
+  .admin-dropdown a.logout-item:hover{ background:#FCE7EF; }
+  .nav-toggle{ display:none; flex:none; width:38px;height:38px; border-radius:10px; border:1px solid var(--line); background:#fff; align-items:center; justify-content:center; cursor:pointer; }
+  .nav-toggle svg{ width:18px;height:18px; stroke:var(--ink); }
+  .nav-drawer{ display:none; }
+  @media (max-width:820px){
+    .nav-links{ display:none; }
+    .nav-toggle{ display:flex; }
+    .nav-drawer{ display:none; flex-direction:column; max-width:1080px; margin:0 auto; padding:0 24px 14px; gap:2px; position:fixed; top:var(--navbar-h); left:0; right:0; background:var(--surface); border-bottom:1px solid var(--line); max-height:calc(100vh - var(--navbar-h)); overflow-y:auto; }
+    .nav-drawer.open{ display:flex; }
+    .nav-drawer a{ display:flex; align-items:center; gap:10px; font-size:14.5px; font-weight:600; color:var(--ink); padding:11px 12px; border-radius:11px; }
+    .nav-drawer a svg{ width:16px;height:16px; stroke:var(--teal); flex:none; }
+    .nav-drawer a:hover, .nav-drawer a.active{ background:var(--sage-soft); }
+    .drawer-admin{ margin-top:6px; border-top:1px solid var(--line); padding-top:6px; }
+    .drawer-admin-trigger{ width:100%; display:flex; align-items:center; gap:10px; font-size:14.5px; font-weight:600; color:var(--ink); padding:11px 12px; border-radius:11px; background:none; border:none; cursor:pointer; text-align:left; }
+    .drawer-admin-trigger svg{ width:16px;height:16px; stroke:var(--teal); flex:none; }
+    .drawer-admin-trigger .chevron{ margin-left:auto; width:14px;height:14px; stroke:var(--ink-soft); transition:transform .18s ease; }
+    .drawer-admin-trigger[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+    .drawer-admin-panel{ max-height:0; overflow:hidden; overflow-y:auto; transition:max-height .22s ease; display:flex; flex-direction:column; padding-left:8px; }
+    .drawer-admin-panel.open{ max-height:160px; }
+    .drawer-admin-panel a.logout-item{ color:var(--coral); }
+    .drawer-admin-panel a.logout-item svg{ stroke:var(--coral); }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/></svg>
+        </span>
+        Calmora
+      </div>
+
+      <div class="nav-links">
+        <a href="/myapp/adminhome_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+
+        <a href="/myapp/viewhr_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          HR
+        </a>
+        <a href="/myapp/adminviewwork_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+          Work
+        </a>
+        <a href="/myapp/adminviewteamleader/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+          Team leaders
+        </a>
+        <a href="/myapp/adminviewfeedback/" class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Feedback
+        </a>
+      </div>
+
+      <div class="admin-menu" id="adminMenu">
+        <button type="button" class="admin-trigger" id="adminTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="adminDropdown">
+          <span class="admin-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
+          </span>
+          Admin
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="admin-dropdown" id="adminDropdown" role="menu">
+          <a href="/myapp/adminchangepassword_get/" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Change password
+          </a>
+          <a class="logout-item" href="/myapp/logout_get/" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Log out
+          </a>
+        </div>
+      </div>
+
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <div class="nav-drawer" id="navDrawer">
+      <a href="/myapp/adminhome_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        Dashboard
+      </a>
+      <a href="/myapp/addhr_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+        Add HR
+      </a>
+      <a href="/myapp/viewhr_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        HR management
+      </a>
+      <a href="/myapp/adminviewwork_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+        View work
+      </a>
+      <a href="/myapp/adminviewteamleader/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+        Team leaders
+      </a>
+      <a href="/myapp/adminviewfeedback/" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Feedback
+      </a>
+
+      <div class="drawer-admin">
+        <button type="button" class="drawer-admin-trigger" id="drawerAdminTrigger" aria-expanded="false" aria-controls="drawerAdminPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
+          Admin
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="drawer-admin-panel" id="drawerAdminPanel">
+          <a href="/myapp/adminchangepassword_get/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Change password
+          </a>
+          <a class="logout-item" href="/myapp/logout_get/">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+            Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<script>
+(function(){
+  const toggle = document.getElementById('navToggle');
+  const drawer = document.getElementById('navDrawer');
+  if(toggle && drawer){
+    toggle.addEventListener('click', function(){
+      const open = drawer.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+  const adminMenu = document.getElementById('adminMenu');
+  const adminTrigger = document.getElementById('adminTrigger');
+  const adminDropdown = document.getElementById('adminDropdown');
+  if(adminTrigger && adminDropdown){
+    adminTrigger.addEventListener('click', function(e){
+      e.stopPropagation();
+      const open = adminDropdown.classList.toggle('open');
+      adminTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function(e){
+      if(adminMenu && !adminMenu.contains(e.target)){
+        adminDropdown.classList.remove('open');
+        adminTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        adminDropdown.classList.remove('open');
+        adminTrigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+  const drawerAdminTrigger = document.getElementById('drawerAdminTrigger');
+  const drawerAdminPanel = document.getElementById('drawerAdminPanel');
+  if(drawerAdminTrigger && drawerAdminPanel){
+    drawerAdminTrigger.addEventListener('click', function(){
+      const open = drawerAdminPanel.classList.toggle('open');
+      drawerAdminTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+
+  <main>
+    <div class="page-head">
+      <h1>Feedback</h1>
+      <p>What team members have shared, and who it's about.</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="feedbackSearch" placeholder="Search feedback, team leader, or member">
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-scroll">
+      <table id="feedbackTable">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Date</th>
+            <th>Feedback</th>
+            <th>Team leader</th>
+            <th>Team member</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+          <tr>
+            <td data-label="No.">{{ forloop.counter }}</td>
+            <td data-label="Date" class="date-cell">{{ i.date|date:'Y-m-d' }}</td>
+            <td data-label="Feedback"><span class="feedback-text">{{ i.feedback }}</span></td>
+            <td data-label="Team leader" class="person">{{ i.ASSIGN_SUB.TEAM_MEMBER.Team_leader.name }}</td>
+            <td data-label="Team member" class="person">{{ i.ASSIGN_SUB.TEAM_MEMBER.name }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <p>No feedback has been submitted yet.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <div class="no-results" id="noResults">No feedback matches your search.</div>
+    </div>
+  </main>
+
+<script>
+(function(){
+  const search = document.getElementById('feedbackSearch');
+  const table = document.getElementById('feedbackTable');
+  const noResults = document.getElementById('noResults');
+  if(!search || !table) return;
+  const rows = Array.from(table.querySelectorAll('tbody tr')).filter(r => !r.querySelector('.empty-state'));
+
+  search.addEventListener('input', function(){
+    const q = search.value.trim().toLowerCase();
+    let visibleCount = 0;
+    rows.forEach(row => {
+      const match = row.textContent.toLowerCase().includes(q);
+      row.classList.toggle('hidden-row', !match);
+      if(match) visibleCount++;
+    });
+    noResults.classList.toggle('visible', q.length > 0 && visibleCount === 0);
+  });
+})();
+</script>
+
+</body>
+</html>

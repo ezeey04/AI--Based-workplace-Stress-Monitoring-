@@ -1,0 +1,755 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stress Report · Calmora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF6FB;--surface:#fff;--ink:#2B2140;--ink-soft:#6B5F82;--teal:#6C3FC9;--teal-dark:#4B2A94;--sage:#B79CE8;--sage-soft:#F0E9FB;--coral:#E0457B;--coral-soft:#FCE7EF;--line:#E7DFF2;--radius:18px;--navbar-h:64px;--c2:#1FB6A6;--c2-soft:#DBF6F1;--c3:#F2B705;--c3-soft:#FDF0CC;--c4:#D6398C;--c4-soft:#FBE1EE;--c7:#9C6ADE;--c7-soft:#EFE4FC;--ok:#14877B}
+*{box-sizing:border-box}
+html{scroll-padding-top:var(--navbar-h)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding-top:var(--navbar-h)}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--sage);outline-offset:2px}
+
+/* navbar */
+.navbar{background:var(--surface);border-bottom:1px solid var(--line);position:fixed;top:0;left:0;right:0;height:var(--navbar-h);z-index:30}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 24px;height:var(--navbar-h);display:flex;align-items:center;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--teal-dark);flex:none}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--teal),var(--sage));display:flex;align-items:center;justify-content:center}
+.brand-mark svg{width:16px;height:16px;stroke:#fff}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--ink-soft);padding:8px 13px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.nav-links a svg{width:14px;height:14px;stroke:currentColor;flex:none}
+.nav-links a:hover,.nav-links a.active{background:var(--sage-soft);color:var(--teal-dark)}
+.admin-menu{position:relative;flex:none}
+.admin-trigger{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);padding:6px 12px 6px 6px;border-radius:999px;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--ink);max-width:180px;transition:border-color .15s,background .15s}
+.admin-trigger:hover,.admin-trigger[aria-expanded="true"]{border-color:var(--teal);background:var(--sage-soft)}
+.admin-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--sage));display:flex;align-items:center;justify-content:center;flex:none;overflow:hidden}
+.admin-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.admin-avatar .initial{font-size:12.5px;font-weight:700;color:#fff}
+.admin-trigger .admin-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:90px}
+.admin-trigger .chevron{width:13px;height:13px;stroke:var(--ink-soft);flex:none;transition:transform .18s}
+.admin-trigger[aria-expanded="true"] .chevron{transform:rotate(180deg)}
+.admin-dropdown{position:absolute;top:calc(100% + 10px);right:0;min-width:220px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 36px -18px rgba(75,42,148,.35);overflow:hidden;max-height:0;opacity:0;pointer-events:none;transform:translateY(-6px);transition:max-height .22s,opacity .18s,transform .18s}
+.admin-dropdown.open{max-height:280px;opacity:1;pointer-events:auto;transform:none;overflow-y:auto}
+.admin-dropdown-head{display:flex;align-items:center;gap:11px;padding:14px;border-bottom:1px solid var(--line)}
+.admin-dropdown-head .admin-avatar{width:38px;height:38px}
+.admin-dropdown-head .admin-avatar .initial{font-size:15px}
+.who{min-width:0;display:flex;flex-direction:column}
+.who .name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.who .role{font-size:12px;color:var(--ink-soft)}
+.admin-dropdown a{display:flex;align-items:center;gap:10px;padding:12px 14px;font-size:14px;font-weight:500;border-bottom:1px solid var(--line)}
+.admin-dropdown a:last-child{border-bottom:none}
+.admin-dropdown a svg{width:15px;height:15px;stroke:var(--teal);flex:none}
+.admin-dropdown a:hover{background:var(--sage-soft)}
+.admin-dropdown a.logout-item{color:var(--coral)}
+.admin-dropdown a.logout-item svg{stroke:var(--coral)}
+.admin-dropdown a.logout-item:hover{background:var(--coral-soft)}
+.nav-toggle{display:none;flex:none;width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;align-items:center;justify-content:center;cursor:pointer}
+.nav-toggle svg{width:18px;height:18px;stroke:var(--ink)}
+.nav-drawer{display:none}
+@media (max-width:820px){
+.nav-links{display:none}.nav-toggle{display:flex}
+.admin-trigger .admin-name,.admin-trigger .chevron{display:none}
+.admin-trigger{padding:4px}.nav-inner{gap:14px}.brand{flex:1}
+.nav-drawer{flex-direction:column;padding:8px 24px 14px;gap:2px;position:fixed;top:var(--navbar-h);left:0;right:0;background:var(--surface);border-bottom:1px solid var(--line);max-height:calc(100vh - var(--navbar-h));overflow-y:auto}
+.nav-drawer.open{display:flex}
+.nav-drawer a{font-size:14.5px;font-weight:600;padding:11px 12px;border-radius:11px}
+.nav-drawer a:hover,.nav-drawer a.active{background:var(--sage-soft)}
+.nav-drawer a.logout-item{color:var(--coral)}}
+
+/* hero */
+header.hero{position:relative;max-width:1080px;margin:20px auto 0;padding:40px 24px 50px;overflow:hidden}
+.hero-wave{position:absolute;inset:0;z-index:0;opacity:.9;width:100%;height:100%}
+.hero-row{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.hero-inner{max-width:580px}
+.eyebrow{margin:0 0 12px;font-size:14px;color:var(--ink-soft)}
+.hero-inner h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,4vw,42px);line-height:1.15;margin:0 0 12px;color:var(--teal-dark)}
+.sub{margin:0;font-size:16px;line-height:1.6;color:var(--ink-soft);max-width:500px}
+.date-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:9px 15px;border-radius:999px;font-size:13px;font-weight:500;color:var(--ink-soft)}
+.date-chip svg{width:14px;height:14px;stroke:var(--teal)}
+main{max-width:1080px;margin:0 auto;padding:0 24px 72px}
+.section-label{font-size:15px;font-weight:600;margin:30px 0 14px}
+footer{max-width:1080px;margin:0 auto;padding:0 24px 40px;font-size:13px;color:var(--ink-soft)}
+
+/* avatar */
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--sage));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none}
+.avatar.sm{width:34px;height:34px;font-size:13px}
+.avatar.lg{width:58px;height:58px;font-size:22px}
+.avatar.all{background:var(--sage-soft)}
+.avatar.all svg{width:17px;height:17px;stroke:var(--teal)}
+
+/* toolbar */
+.toolbar{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:flex;gap:14px 18px;align-items:center;flex-wrap:wrap;position:relative;z-index:6}
+.tb-spacer{flex:1}
+.picker{position:relative}
+.picker-btn{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 14px 8px 8px;min-width:270px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.picker-btn:hover,.picker-btn[aria-expanded="true"]{border-color:var(--teal);background:var(--sage-soft)}
+.pk-text{display:flex;flex-direction:column;min-width:0;flex:1}
+.pk-label{font-size:10.5px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.pk-name{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.picker-btn .chev{width:15px;height:15px;stroke:var(--ink-soft);flex:none;transition:transform .18s}
+.picker-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.picker-panel{position:absolute;top:calc(100% + 8px);left:0;width:min(350px,88vw);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 36px -18px rgba(75,42,148,.4);overflow:hidden;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .18s,transform .18s;z-index:25}
+.picker-panel.open{opacity:1;pointer-events:auto;transform:none}
+.picker-search{padding:10px;border-bottom:1px solid var(--line)}
+.picker-search input{width:100%;border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-family:inherit;font-size:13.5px;outline:none;background:#FBF8FE}
+.picker-search input:focus{border-color:var(--teal);background:#fff}
+.picker-list{max-height:300px;overflow-y:auto;padding:6px}
+.pk-item{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:none;background:none;border-radius:12px;cursor:pointer;text-align:left}
+.pk-item:hover,.pk-item.sel{background:var(--sage-soft)}
+.pk-main{flex:1;min-width:0}
+.pk-n{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-e{font-size:11.5px;color:var(--ink-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-badges{display:flex;gap:5px;flex:none}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--sage-soft);color:var(--teal-dark)}
+.badge.red{background:var(--coral-soft);color:var(--coral)}
+.pk-empty{padding:18px;text-align:center;font-size:13px;color:var(--ink-soft)}
+.seg-tabs{display:inline-flex;background:var(--sage-soft);border-radius:999px;padding:4px;gap:2px}
+.seg-tabs button{border:none;background:none;padding:8px 18px;border-radius:999px;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+.seg-tabs button.on{background:#fff;color:var(--teal-dark);box-shadow:0 2px 8px rgba(75,42,148,.16)}
+.navigator{display:flex;align-items:center;gap:6px}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn svg{width:15px;height:15px;stroke:var(--teal-dark)}
+.icon-btn:hover:not(:disabled){background:var(--sage-soft);border-color:var(--teal)}
+.icon-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-label{min-width:190px;text-align:center;font-weight:600;font-size:14px}
+.ghost-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;color:var(--teal-dark);font-size:13px;font-weight:600;padding:9px 15px;border-radius:999px;cursor:pointer}
+.ghost-btn svg{width:14px;height:14px;stroke:currentColor}
+.ghost-btn:hover{background:var(--sage-soft);border-color:var(--teal)}
+
+/* employee header */
+.emp-head{display:none;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(135deg,#fff,var(--sage-soft));border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;margin-top:18px}
+.eh-main{min-width:150px;flex:1}
+.eh-tag{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--teal)}
+.eh-name{font-family:'Fraunces',serif;font-weight:500;font-size:22px}
+.eh-email{font-size:12.5px;color:var(--ink-soft)}
+.eh-stats{display:flex;gap:22px;flex-wrap:wrap}
+.eh-stats div{display:flex;flex-direction:column}
+.eh-stats b{font-family:'Fraunces',serif;font-weight:500;font-size:22px}
+.eh-stats span{font-size:11.5px;color:var(--ink-soft)}
+.t-stress{color:var(--c4)!important}.t-ok{color:var(--ok)!important}
+
+/* summary */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media (max-width:980px){.summary{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.summary{grid-template-columns:1fr}}
+.stat{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:var(--radius);padding:20px 22px}
+.s-total{--accent:var(--c7);--accent-soft:var(--c7-soft)}
+.s-stress{--accent:var(--c4);--accent-soft:var(--c4-soft)}
+.s-normal{--accent:var(--c2);--accent-soft:var(--c2-soft)}
+.s-avg{--accent:var(--c3);--accent-soft:var(--c3-soft)}
+.stat-icon{width:42px;height:42px;border-radius:12px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.stat-icon svg{width:20px;height:20px;stroke:var(--accent)}
+.stat .label{font-size:13px;color:var(--ink-soft);margin-bottom:3px}
+.stat .number{font-family:'Fraunces',serif;font-weight:500;font-size:34px;line-height:1.1}
+.s-stress .number{color:var(--c4)}.s-normal .number{color:var(--ok)}
+.stat .small{margin-top:5px;font-size:12px;color:var(--ink-soft)}
+.meter{margin-top:12px;height:6px;background:#F0EAF6;border-radius:10px;overflow:hidden}
+.meter span{display:block;height:100%;border-radius:10px;background:var(--accent)}
+
+/* cards + charts */
+.card-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.card-top{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.card-top h2{font-family:'Fraunces',serif;font-weight:500;font-size:20px;margin:0}
+.card-top p{margin:4px 0 0;font-size:13px;color:var(--ink-soft)}
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+@media (max-width:860px){.chart-grid{grid-template-columns:1fr}}
+.chart-wrap{position:relative;height:300px;padding:16px 20px 20px}
+.donut-center{position:absolute;inset:16px 20px 54px;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-center b{font-family:'Fraunces',serif;font-weight:500;font-size:30px;color:var(--c4)}
+.donut-center span{font-size:12px;color:var(--ink-soft)}
+
+/* tables */
+.table-wrapper{max-height:420px;overflow:auto}
+.table-wrapper thead th{position:sticky;top:0;z-index:5}
+.table-wrapper::-webkit-scrollbar{width:8px;height:8px}
+.table-wrapper::-webkit-scrollbar-thumb{background:var(--sage);border-radius:10px}
+table{width:100%;border-collapse:collapse}
+th{background:#FBF8FE;color:var(--ink-soft);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-align:left;padding:13px 24px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:14px 24px;border-bottom:1px solid #F1EBF7;font-size:13.5px;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+tr.click-row{cursor:pointer}
+tr.click-row:hover td,tr.data-row:hover td{background:#FCFAFE}
+tr.is-cur td{background:var(--sage-soft)!important}
+.muted-cell{color:var(--ink-soft)}
+.user-info{display:flex;align-items:center;gap:12px}
+.user-name{font-weight:600}
+.user-email{margin-top:2px;font-size:12px;color:var(--ink-soft)}
+.status{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600}
+.status-dot{width:7px;height:7px;border-radius:50%}
+.status-stress{background:var(--coral-soft);color:var(--coral)}.status-stress .status-dot{background:var(--coral)}
+.status-normal{background:var(--c2-soft);color:var(--ok)}.status-normal .status-dot{background:var(--c2)}
+.score-container,.rate-cell{display:flex;align-items:center;gap:12px}
+.score-bar,.rate-bar{width:90px;height:7px;background:#F0EAF6;border-radius:10px;overflow:hidden}
+.score-fill{height:100%;border-radius:10px;background:var(--c2)}
+.score-fill.is-stress,.rate-bar span{background:linear-gradient(90deg,var(--c4),var(--coral))}
+.rate-bar span{display:block;height:100%;border-radius:10px}
+.score-text{font-weight:600;min-width:42px}
+.select-sm{border:1px solid var(--line);border-radius:999px;padding:9px 16px;background:#fff;color:var(--ink);font-family:inherit;font-size:13px;cursor:pointer;outline:none}
+.select-sm:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--sage-soft)}
+.empty{padding:46px 20px;text-align:center;color:var(--ink-soft)}
+.empty-icon{width:56px;height:56px;border-radius:16px;margin:0 auto 12px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center}
+.empty-icon svg{width:26px;height:26px;stroke:var(--teal)}
+.empty h3{margin:0 0 5px;font-family:'Fraunces',serif;font-weight:500;font-size:18px;color:var(--ink)}
+.empty p{margin:0;font-size:13px}
+.table-foot{padding:13px 24px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);background:#FBF8FE}
+
+@media (max-width:700px){
+header.hero{padding:32px 20px 40px}main{padding:0 16px 56px}
+.picker,.picker-btn{min-width:0;width:100%}.tb-spacer{display:none}
+.navigator{width:100%;justify-content:space-between}.nav-label{min-width:0;flex:1}
+th,td{padding-left:16px;padding-right:16px}}
+@media print{
+.navbar,.picker,.seg-tabs,.navigator,.ghost-btn,.select-sm,.hero-wave{display:none!important}
+body{padding-top:0;background:#fff}.table-wrapper{max-height:none;overflow:visible}.stat,.card-box{break-inside:avoid}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/></svg></span>
+      Calmora
+    </div>
+
+    <div class="nav-links">
+      <a href="/myapp/hrhome_get/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Dashboard</a>
+      <a href="/myapp/viewteamleader_get/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg>Team leaders</a>
+      <a href="/myapp/viewteammember_get/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team members</a>
+      <a href="/myapp/hrviewwork_get/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>Work</a>
+      <a href="/myapp/viewassignedwork_get/"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Assigned work</a>
+      <a href="/myapp/hr_stress_report_get/" class="active"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Stress reports</a>
+    </div>
+
+    <div class="admin-menu" id="adminMenu">
+      <button type="button" class="admin-trigger" id="adminTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="adminDropdown">
+        <span class="admin-avatar">
+          {% if hr.photo %}<img src="{{ hr.photo.url }}" alt="{{ hr.name }}">{% else %}<span class="initial">{{ hr.name|slice:":1"|upper }}</span>{% endif %}
+        </span>
+        <span class="admin-name">{{ hr.name }}</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="admin-dropdown" id="adminDropdown" role="menu">
+        <div class="admin-dropdown-head">
+          <span class="admin-avatar">
+            {% if hr.photo %}<img src="{{ hr.photo.url }}" alt="{{ hr.name }}">{% else %}<span class="initial">{{ hr.name|slice:":1"|upper }}</span>{% endif %}
+          </span>
+          <span class="who"><span class="name">{{ hr.name }}</span><span class="role">HR</span></span>
+        </div>
+        <a href="/myapp/hrviewprofile_get/" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>View profile</a>
+        <a href="/myapp/hrchangepassword_get/" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Change password</a>
+        <a class="logout-item" href="/myapp/logout_get/" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log out</a>
+      </div>
+    </div>
+
+    <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+
+  <div class="nav-drawer" id="navDrawer">
+    <a href="/myapp/hrhome_get/">Dashboard</a>
+    <a href="/myapp/viewteamleader_get/">View team leaders</a>
+    <a href="/myapp/viewteammember_get/">View team members</a>
+    <a href="/myapp/hrviewwork_get/">View work</a>
+    <a href="/myapp/viewassignedwork_get/">Assigned work</a>
+    <a href="/myapp/hr_stress_report_get/" class="active">Stress reports</a>
+    <a href="/myapp/hrviewprofile_get/">View profile</a>
+    <a href="/myapp/hrchangepassword_get/">Change password</a>
+    <a class="logout-item" href="/myapp/logout_get/">Log out</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <svg class="hero-wave" viewBox="0 0 1080 260" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 200 C 220 120, 420 260, 660 170 S 1080 90, 1080 90 L 1080 260 L 0 260 Z" fill="#F0E9FB"/>
+    <path d="M0 220 C 260 260, 480 140, 760 210 S 1080 160, 1080 160 L 1080 260 L 0 260 Z" fill="#FAF6FB"/>
+  </svg>
+  <div class="hero-row">
+    <div class="hero-inner">
+      <p class="eyebrow">Stress monitoring</p>
+      <h1>Stress report</h1>
+      <p class="sub">Choose an employee and view their stress results day by day, week by week or month by month.</p>
+    </div>
+    <div class="date-chip">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Generated: {% now "d M Y" %}
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <div class="picker" id="picker">
+      <button type="button" class="picker-btn" id="pickerBtn" aria-haspopup="listbox" aria-expanded="false">
+        <span class="avatar sm all" id="pickerAvatar"></span>
+        <span class="pk-text"><span class="pk-label">Employee</span><span class="pk-name" id="pickerName">All employees</span></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="picker-panel" id="pickerPanel">
+        <div class="picker-search"><input type="text" id="pickerSearch" placeholder="Search employee..." autocomplete="off"></div>
+        <div class="picker-list" id="pickerList" role="listbox"></div>
+      </div>
+    </div>
+
+    <div class="seg-tabs" id="tabs" role="tablist">
+      <button type="button" data-p="day" class="on">Daily</button>
+      <button type="button" data-p="week">Weekly</button>
+      <button type="button" data-p="month">Monthly</button>
+    </div>
+
+    <div class="tb-spacer"></div>
+
+    <div class="navigator">
+      <button type="button" class="icon-btn" id="prevBtn" aria-label="Previous period"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="nav-label" id="navLabel">—</div>
+      <button type="button" class="icon-btn" id="nextBtn" aria-label="Next period"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button type="button" class="ghost-btn" id="todayBtn">Today</button>
+    </div>
+
+    <button type="button" class="ghost-btn" id="printBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Print
+    </button>
+  </div>
+
+  <div class="emp-head" id="empHead"></div>
+
+  <p class="section-label" id="summaryLabel">Overview</p>
+  <div class="summary" id="cards"></div>
+
+  <p class="section-label">Trend</p>
+  <div class="chart-grid">
+    <div class="card-box">
+      <div class="card-top"><div>
+        <h2 id="chartTitle">Daily trend</h2>
+        <p>Bars: reports · Line: stress rate · Click a bar to open that period</p>
+      </div></div>
+      <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="card-box">
+      <div class="card-top"><div><h2>Stress split</h2><p>Selected period</p></div></div>
+      <div class="chart-wrap">
+        <canvas id="donutChart"></canvas>
+        <div class="donut-center"><b id="donutPct">–</b><span>stress rate</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="breakdownCard">
+    <p class="section-label">By employee</p>
+    <div class="card-box">
+      <div class="card-top"><div><h2>Employees in this period</h2><p id="breakdownSub">—</p></div></div>
+      <div class="chart-wrap" id="empWrap"><canvas id="empChart"></canvas></div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Employee</th><th>Reports</th><th>Stress</th><th>Non-stress</th><th>Stress rate</th><th>Overall</th></tr></thead>
+          <tbody id="breakdownBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label">History</p>
+  <div class="card-box">
+    <div class="card-top"><div><h2 id="historyTitle">Daily history</h2><p>Click a row to open that period</p></div></div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Period</th><th>Reports</th><th>Stress</th><th>Non-stress</th><th>Avg score</th><th>Overall</th></tr></thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label">Records</p>
+  <div class="card-box">
+    <div class="card-top">
+      <div><h2>Individual records</h2><p id="recSub">—</p></div>
+      <select class="select-sm" id="statusFilter">
+        <option value="ALL">All status</option>
+        <option value="STRESS">Stress</option>
+        <option value="NON-STRESS">Non-stress</option>
+      </select>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Employee</th><th>Status</th><th>Score</th><th>Date</th><th>Time</th></tr></thead>
+        <tbody id="recordsBody"></tbody>
+      </table>
+    </div>
+    <div class="table-foot" id="tableFoot">—</div>
+  </div>
+</main>
+
+<footer>Calmora · Stress monitoring</footer>
+
+<!-- Django data -->
+<div id="dataRows" hidden>
+{% for report in reports %}
+  <span class="r"
+        data-user="{{ report.LOGIN.username }}"
+        data-email="{{ report.LOGIN.email }}"
+        data-status="{{ report.stress_status }}"
+        data-score="{{ report.score|stringformat:'f' }}"
+        data-date="{{ report.date|date:'Y-m-d' }}"
+        data-time="{{ report.time|time:'H:i' }}"
+        data-time12="{{ report.time|time:'h:i A' }}"></span>
+{% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+
+/* ---------- nav / admin menu ---------- */
+const tg = $('navToggle'), dr = $('navDrawer');
+tg.onclick = () => { const o = dr.classList.toggle('open'); tg.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+const am = $('adminMenu'), at = $('adminTrigger'), ad = $('adminDropdown');
+const closeAdmin = () => { ad.classList.remove('open'); at.setAttribute('aria-expanded', 'false'); };
+at.onclick = e => { e.stopPropagation(); const o = ad.classList.toggle('open'); at.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+document.addEventListener('click', e => { if(!am.contains(e.target)) closeAdmin(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAdmin(); });
+
+/* ---------- helpers ---------- */
+const MON_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MON_L = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+const parseISO = s => { const p = String(s).split('-'); return new Date(+p[0], +p[1]-1, +p[2]); };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const initial = s => (String(s || '?').trim().charAt(0) || '?').toUpperCase();
+
+function startOf(p, d){
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  if(p === 'week') x.setDate(x.getDate() - ((x.getDay()+6)%7));
+  if(p === 'month') x.setDate(1);
+  return x;
+}
+function shift(p, start, n){
+  const x = new Date(start);
+  if(p === 'day') x.setDate(x.getDate()+n);
+  else if(p === 'week') x.setDate(x.getDate()+7*n);
+  else x.setMonth(x.getMonth()+n);
+  return x;
+}
+function endOf(p, start){ const e = shift(p, start, 1); e.setDate(e.getDate()-1); return e; }
+const fmtDay = d => pad(d.getDate()) + ' ' + MON_S[d.getMonth()] + ' ' + d.getFullYear();
+function label(p, s){
+  if(p === 'day') return fmtDay(s);
+  if(p === 'month') return MON_L[s.getMonth()] + ' ' + s.getFullYear();
+  return pad(s.getDate()) + ' ' + MON_S[s.getMonth()] + ' – ' + fmtDay(endOf('week', s));
+}
+function shortLabel(p, s){
+  if(p === 'month') return MON_S[s.getMonth()] + " '" + String(s.getFullYear()).slice(2);
+  return pad(s.getDate()) + ' ' + MON_S[s.getMonth()];
+}
+
+/* ---------- data ---------- */
+const DATA = Array.from(document.querySelectorAll('#dataRows .r')).map(el => {
+  const d = el.dataset;
+  return { user:d.user, email:d.email, stress:d.status === 'STRESS', score:parseFloat(d.score) || 0,
+           date:parseISO(d.date), dateISO:d.date, time12:d.time12, ts:d.date + ' ' + d.time };
+}).filter(r => !isNaN(r.date.getTime()));
+
+const now = new Date();
+const todayD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+let minD = null, maxD = todayD, latest = todayD;
+DATA.forEach(r => { if(!minD || r.date < minD) minD = r.date; if(r.date > maxD) maxD = r.date; });
+if(DATA.length) latest = DATA.reduce((a, r) => r.date > a ? r.date : a, DATA[0].date);
+
+const employees = (function(){
+  const m = new Map();
+  DATA.forEach(r => {
+    let e = m.get(r.user);
+    if(!e){ e = { user:r.user, email:r.email, total:0, stress:0 }; m.set(r.user, e); }
+    e.total++; if(r.stress) e.stress++;
+  });
+  return Array.from(m.values()).sort((a, b) => a.user.localeCompare(b.user));
+})();
+
+const state = { emp:'ALL', period:'day', anchor:latest, status:'ALL' };
+const PLABEL = { day:'Daily', week:'Weekly', month:'Monthly' };
+const PUNIT = { day:'day', week:'week', month:'month' };
+const NBARS = { day:7, week:8, month:6 };
+const cur = () => startOf(state.period, state.anchor);
+const empRows = () => state.emp === 'ALL' ? DATA : DATA.filter(r => r.user === state.emp);
+const rowsIn = (rows, s, e) => rows.filter(r => r.date >= s && r.date <= e);
+
+function agg(rows){
+  const t = rows.length, s = rows.filter(r => r.stress).length;
+  return { total:t, stress:s, normal:t-s, rate:t ? Math.round(s/t*100) : 0,
+           avg:t ? rows.reduce((a, r) => a + r.score, 0) / t : 0 };
+}
+const pill = stress => stress
+  ? '<span class="status status-stress"><span class="status-dot"></span>STRESS</span>'
+  : '<span class="status status-normal"><span class="status-dot"></span>NON-STRESS</span>';
+const emptyBlock = (title, text) =>
+  '<div class="empty"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg></div><h3>' + title + '</h3><p>' + text + '</p></div>';
+
+/* ---------- employee picker ---------- */
+const ALL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+
+function buildPicker(){
+  const q = $('pickerSearch').value.trim().toLowerCase();
+  let html = '';
+  if(!q || 'all employees'.includes(q)){
+    html += '<button type="button" class="pk-item' + (state.emp === 'ALL' ? ' sel' : '') + '" data-user="">' +
+      '<span class="avatar sm all">' + ALL_ICON + '</span>' +
+      '<span class="pk-main"><span class="pk-n">All employees</span><span class="pk-e">' + employees.length + ' employees</span></span>' +
+      '<span class="pk-badges"><span class="badge">' + DATA.length + '</span></span></button>';
+  }
+  employees.filter(e => !q || e.user.toLowerCase().includes(q) || (e.email || '').toLowerCase().includes(q)).forEach(e => {
+    html += '<button type="button" class="pk-item' + (state.emp === e.user ? ' sel' : '') + '" data-user="' + esc(e.user) + '">' +
+      '<span class="avatar sm">' + esc(initial(e.user)) + '</span>' +
+      '<span class="pk-main"><span class="pk-n">' + esc(e.user) + '</span><span class="pk-e">' + esc(e.email) + '</span></span>' +
+      '<span class="pk-badges"><span class="badge">' + e.total + '</span>' +
+      (e.stress ? '<span class="badge red">' + e.stress + '</span>' : '') + '</span></button>';
+  });
+  $('pickerList').innerHTML = html || '<div class="pk-empty">No employee found</div>';
+}
+function setPickerOpen(open){
+  $('pickerPanel').classList.toggle('open', open);
+  $('pickerBtn').setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(open){ $('pickerSearch').value = ''; buildPicker(); setTimeout(() => $('pickerSearch').focus(), 50); }
+}
+$('pickerBtn').addEventListener('click', e => { e.stopPropagation(); setPickerOpen(!$('pickerPanel').classList.contains('open')); });
+$('pickerSearch').addEventListener('input', buildPicker);
+$('pickerPanel').addEventListener('click', e => e.stopPropagation());
+$('pickerList').addEventListener('click', e => { const b = e.target.closest('.pk-item'); if(b) selectEmp(b.dataset.user); });
+document.addEventListener('click', () => setPickerOpen(false));
+document.addEventListener('keydown', e => { if(e.key === 'Escape') setPickerOpen(false); });
+function selectEmp(u){ state.emp = u || 'ALL'; setPickerOpen(false); renderAll(); }
+
+function renderPickerButton(){
+  if(state.emp === 'ALL'){
+    $('pickerAvatar').className = 'avatar sm all'; $('pickerAvatar').innerHTML = ALL_ICON;
+    $('pickerName').textContent = 'All employees';
+  } else {
+    $('pickerAvatar').className = 'avatar sm'; $('pickerAvatar').textContent = initial(state.emp);
+    $('pickerName').textContent = state.emp;
+  }
+}
+
+/* ---------- navigator ---------- */
+function renderNav(){
+  const c = cur();
+  $('navLabel').textContent = label(state.period, c);
+  $('prevBtn').disabled = !minD || c <= startOf(state.period, minD);
+  $('nextBtn').disabled = shift(state.period, c, 1) > maxD;
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.p === state.period));
+}
+
+/* ---------- employee header ---------- */
+function renderEmpHead(){
+  const box = $('empHead');
+  if(state.emp === 'ALL'){ box.style.display = 'none'; return; }
+  const a = agg(DATA.filter(r => r.user === state.emp));
+  const e = employees.find(x => x.user === state.emp) || { user:state.emp, email:'' };
+  box.style.display = 'flex';
+  box.innerHTML =
+    '<div class="avatar lg">' + esc(initial(e.user)) + '</div>' +
+    '<div class="eh-main"><div class="eh-tag">Individual report</div><div class="eh-name">' + esc(e.user) + '</div><div class="eh-email">' + esc(e.email) + '</div></div>' +
+    '<div class="eh-stats">' +
+      '<div><b>' + a.total + '</b><span>All-time reports</span></div>' +
+      '<div><b class="t-stress">' + a.stress + '</b><span>Stress</span></div>' +
+      '<div><b class="t-ok">' + a.normal + '</b><span>Non-stress</span></div>' +
+      '<div><b>' + a.rate + '%</b><span>Stress rate</span></div>' +
+    '</div>' +
+    '<button type="button" class="ghost-btn" id="clearEmp">All employees</button>';
+  $('clearEmp').onclick = () => selectEmp('');
+}
+
+/* ---------- summary cards ---------- */
+function stat(cls, icon, lab, num, small, meter){
+  return '<div class="stat ' + cls + '"><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + icon + '</svg></div>' +
+    '<div class="label">' + lab + '</div><div class="number">' + num + '</div><div class="small">' + small + '</div>' +
+    (meter == null ? '' : '<div class="meter"><span style="width:' + meter + '%"></span></div>') + '</div>';
+}
+function renderCards(){
+  const c = cur();
+  const a = agg(rowsIn(empRows(), c, endOf(state.period, c)));
+  const ok = a.total ? 100 - a.rate : 0;
+  $('summaryLabel').textContent = PLABEL[state.period] + ' report · ' + label(state.period, c);
+  $('cards').innerHTML =
+    stat('s-total', '<path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/>', 'Total reports', a.total, 'In this ' + PUNIT[state.period]) +
+    stat('s-stress', '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>', 'Stress detected', a.stress, a.rate + '% of reports', a.rate) +
+    stat('s-normal', '<path d="M20 6L9 17l-5-5"/>', 'Non-stress', a.normal, ok + '% of reports', ok) +
+    stat('s-avg', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', 'Average score', a.total ? a.avg.toFixed(2) : '–', 'Model confidence');
+}
+
+/* ---------- charts (Chart.js) ---------- */
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.color = '#6B5F82';
+const charts = {};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function mk(id, cfg){ if(charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
+
+function renderChart(){
+  const p = state.period, c = cur(), rows = empRows(), items = [];
+  for(let i = NBARS[p]-1; i >= 0; i--){
+    const s = shift(p, c, -i);
+    items.push({ s:s, a:agg(rowsIn(rows, s, endOf(p, s))) });
+  }
+  $('chartTitle').textContent = PLABEL[p] + ' trend';
+  mk('trendChart', {
+    type:'bar',
+    data:{
+      labels: items.map(it => shortLabel(p, it.s)),
+      datasets:[
+        { type:'line', label:'Stress rate %', yAxisID:'y1', data:items.map(it => it.a.rate),
+          borderColor:css('--teal'), backgroundColor:css('--teal'), tension:.35, pointRadius:4, order:0 },
+        { label:'Stress', stack:'s', borderRadius:4, data:items.map(it => it.a.stress), backgroundColor:css('--coral') },
+        { label:'Non-stress', stack:'s', borderRadius:4, data:items.map(it => it.a.normal), backgroundColor:css('--c2') }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      scales:{
+        x:{ stacked:true, grid:{ display:false } },
+        y:{ stacked:true, beginAtZero:true, ticks:{ precision:0 }, title:{ display:true, text:'Reports' } },
+        y1:{ position:'right', min:0, max:100, grid:{ drawOnChartArea:false }, ticks:{ callback:v => v + '%' } }
+      },
+      plugins:{ legend:{ position:'bottom' } },
+      onClick:(e, els) => { if(!els.length) return; state.anchor = items[els[0].index].s; renderAll(); }
+    }
+  });
+}
+
+function renderDonut(){
+  const c = cur();
+  const a = agg(rowsIn(empRows(), c, endOf(state.period, c)));
+  $('donutPct').textContent = a.total ? a.rate + '%' : '–';
+  mk('donutChart', {
+    type:'doughnut',
+    data:{
+      labels: a.total ? ['Stress', 'Non-stress'] : ['No data'],
+      datasets:[{ data:a.total ? [a.stress, a.normal] : [1],
+                  backgroundColor:a.total ? [css('--coral'), css('--c2')] : [css('--line')], borderWidth:0 }]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ position:'bottom' } } }
+  });
+}
+
+function renderEmpChart(){
+  if(state.emp !== 'ALL') return;
+  const c = cur();
+  const rows = rowsIn(DATA, c, endOf(state.period, c));
+  const list = employees.map(e => ({ e:e, a:agg(rows.filter(r => r.user === e.user)) }))
+    .filter(x => x.a.total).sort((x, y) => y.a.rate - x.a.rate);
+  $('empWrap').style.height = Math.max(160, list.length * 36 + 50) + 'px';
+  mk('empChart', {
+    type:'bar',
+    data:{
+      labels: list.map(x => x.e.user),
+      datasets:[{ label:'Stress rate %', data:list.map(x => x.a.rate),
+                  backgroundColor:list.map(x => x.a.rate >= 50 ? css('--coral') : css('--c2')), borderRadius:6 }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      scales:{ x:{ min:0, max:100, ticks:{ callback:v => v + '%' } } },
+      plugins:{ legend:{ display:false } },
+      onClick:(e, els) => { if(els.length) selectEmp(list[els[0].index].e.user); }
+    }
+  });
+}
+
+/* ---------- breakdown table ---------- */
+function renderBreakdown(){
+  const box = $('breakdownCard');
+  if(state.emp !== 'ALL'){ box.style.display = 'none'; return; }
+  box.style.display = '';
+  const c = cur();
+  const rows = rowsIn(DATA, c, endOf(state.period, c));
+  $('breakdownSub').textContent = label(state.period, c) + ' · click an employee to see their individual report';
+  const list = employees.map(e => ({ e:e, a:agg(rows.filter(r => r.user === e.user)) }))
+    .filter(x => x.a.total > 0).sort((x, y) => y.a.rate - x.a.rate || y.a.total - x.a.total);
+  $('breakdownBody').innerHTML = list.length ? list.map(x =>
+    '<tr class="click-row" data-user="' + esc(x.e.user) + '"><td><div class="user-info"><div class="avatar">' + esc(initial(x.e.user)) +
+    '</div><div><div class="user-name">' + esc(x.e.user) + '</div><div class="user-email">' + esc(x.e.email) + '</div></div></div></td>' +
+    '<td>' + x.a.total + '</td><td>' + x.a.stress + '</td><td>' + x.a.normal + '</td>' +
+    '<td><div class="rate-cell"><div class="rate-bar"><span style="width:' + x.a.rate + '%"></span></div><b>' + x.a.rate + '%</b></div></td>' +
+    '<td>' + pill(x.a.rate >= 50) + '</td></tr>'
+  ).join('') : '<tr><td colspan="6">' + emptyBlock('No reports in this ' + PUNIT[state.period], 'Use the arrows above to look at another period.') + '</td></tr>';
+}
+
+/* ---------- history ---------- */
+function renderHistory(){
+  const p = state.period, map = new Map();
+  empRows().forEach(r => {
+    const s = startOf(p, r.date), k = iso(s);
+    let g = map.get(k);
+    if(!g){ g = { s:s, rows:[] }; map.set(k, g); }
+    g.rows.push(r);
+  });
+  const groups = Array.from(map.values()).sort((a, b) => b.s - a.s);
+  const c = cur();
+  $('historyTitle').textContent = PLABEL[p] + ' history' + (state.emp === 'ALL' ? '' : ' · ' + state.emp);
+  $('historyBody').innerHTML = groups.length ? groups.map(g => {
+    const a = agg(g.rows), isCur = g.s.getTime() === c.getTime();
+    return '<tr class="click-row' + (isCur ? ' is-cur' : '') + '" data-start="' + iso(g.s) + '"><td><b>' + esc(label(p, g.s)) + '</b></td>' +
+      '<td>' + a.total + '</td><td>' + a.stress + '</td><td>' + a.normal + '</td><td>' + a.avg.toFixed(2) + '</td><td>' + pill(a.rate >= 50) + '</td></tr>';
+  }).join('') : '<tr><td colspan="6">' + emptyBlock('No reports yet', 'Stress results will appear here after monitoring.') + '</td></tr>';
+}
+
+/* ---------- records ---------- */
+function renderRecords(){
+  const c = cur(), p = state.period;
+  let rows = rowsIn(empRows(), c, endOf(p, c));
+  const inPeriod = rows.length;
+  if(state.status === 'STRESS') rows = rows.filter(r => r.stress);
+  if(state.status === 'NON-STRESS') rows = rows.filter(r => !r.stress);
+  rows.sort((a, b) => a.ts < b.ts ? 1 : -1);
+  $('recSub').textContent = (state.emp === 'ALL' ? 'All employees' : state.emp) + ' · ' + label(p, c);
+  $('recordsBody').innerHTML = rows.length ? rows.map(r => {
+    const w = Math.max(0, Math.min(100, Math.round(r.score * 100)));
+    return '<tr class="data-row"><td><div class="user-info"><div class="avatar">' + esc(initial(r.user)) + '</div><div><div class="user-name">' + esc(r.user) +
+      '</div><div class="user-email">' + esc(r.email) + '</div></div></div></td><td>' + pill(r.stress) + '</td>' +
+      '<td><div class="score-container"><div class="score-bar"><div class="score-fill' + (r.stress ? ' is-stress' : '') + '" style="width:' + w + '%"></div></div>' +
+      '<span class="score-text">' + r.score.toFixed(2) + '</span></div></td>' +
+      '<td class="muted-cell">' + fmtDay(r.date) + '</td><td class="muted-cell">' + esc(r.time12) + '</td></tr>';
+  }).join('') : '<tr><td colspan="5">' + emptyBlock('No records', inPeriod ? 'No records match the status filter.' : 'Nothing was recorded in this ' + PUNIT[p] + '. Try another period.') + '</td></tr>';
+  $('tableFoot').textContent = rows.length === inPeriod
+    ? 'Showing ' + rows.length + ' record' + (rows.length === 1 ? '' : 's')
+    : 'Showing ' + rows.length + ' of ' + inPeriod + ' records';
+}
+
+function renderAll(){
+  renderPickerButton(); renderNav(); renderEmpHead(); renderCards();
+  renderChart(); renderDonut(); renderBreakdown(); renderEmpChart();
+  renderHistory(); renderRecords();
+}
+
+/* ---------- events ---------- */
+document.querySelectorAll('#tabs button').forEach(b => b.addEventListener('click', () => { state.period = b.dataset.p; renderAll(); }));
+$('prevBtn').addEventListener('click', () => { state.anchor = shift(state.period, cur(), -1); renderAll(); });
+$('nextBtn').addEventListener('click', () => { state.anchor = shift(state.period, cur(), 1); renderAll(); });
+$('todayBtn').addEventListener('click', () => { state.anchor = todayD; renderAll(); });
+$('printBtn').addEventListener('click', () => window.print());
+$('statusFilter').addEventListener('change', e => { state.status = e.target.value; renderRecords(); });
+$('historyBody').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-start]'); if(!tr) return;
+  state.anchor = parseISO(tr.dataset.start); renderAll();
+  $('cards').scrollIntoView({ behavior:'smooth', block:'start' });
+});
+$('breakdownBody').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-user]'); if(!tr) return;
+  selectEmp(tr.dataset.user); window.scrollTo({ top:0, behavior:'smooth' });
+});
+
+renderAll();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>View Status · Calmora </title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+        /* =========================================================
+           COLOR THEME
+        ========================================================= */
+
+        :root {
+            --bg: #FAF6FB;
+            --surface: #FFFFFF;
+
+            --ink: #2B2140;
+            --ink-soft: #6B5F82;
+            --ink-faint: #9B8FB3;
+
+            --teal: #6C3FC9;
+            --teal-dark: #4B2A94;
+
+            --sage: #B79CE8;
+            --sage-soft: #F0E9FB;
+
+            --coral: #E0457B;
+
+            --line: #E7DFF2;
+
+            --green: #1FB6A6;
+            --green-soft: #DBF6F1;
+
+            --yellow: #F2B705;
+            --yellow-soft: #FDF0CC;
+
+            --radius: 18px;
+            --sidebar-w: 250px;
+            --topbar-h: 64px;
+        }
+
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid var(--sage);
+            outline-offset: 3px;
+        }
+
+
+        /* =========================================================
+           MAIN LAYOUT
+        ========================================================= */
+
+        .shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+            width: var(--sidebar-w);
+            flex: none;
+
+            background: linear-gradient(
+                190deg,
+                var(--teal-dark),
+                var(--teal) 70%
+            );
+
+            color: #fff;
+
+            display: flex;
+            flex-direction: column;
+
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+
+            z-index: 40;
+
+            transition: transform .22s ease;
+        }
+
+
+        /* Brand */
+
+        .sb-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 22px 22px 18px;
+        }
+
+        .sb-brand-mark {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.16);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: none;
+        }
+
+        .sb-brand-mark svg {
+            width: 18px;
+            height: 18px;
+            stroke: #fff;
+        }
+
+        .sb-brand-text {
+            font-size: 14.5px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .sb-brand-text span {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 500;
+            opacity: .7;
+        }
+
+
+        /* Sidebar Navigation */
+
+        .sb-nav {
+            flex: 1;
+            padding: 10px 14px;
+            overflow-y: auto;
+        }
+
+        .sb-section {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+
+            opacity: .55;
+
+            padding: 16px 10px 8px;
+        }
+
+        .sb-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.82);
+
+            padding: 11px 12px;
+            border-radius: 11px;
+
+            margin-bottom: 2px;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+        .sb-nav a svg {
+            width: 17px;
+            height: 17px;
+            stroke: currentColor;
+            flex: none;
+            opacity: .9;
+        }
+
+        .sb-nav a:hover {
+            background: rgba(255,255,255,.10);
+            color: #fff;
+        }
+
+        .sb-nav a.active {
+            background: #fff;
+            color: var(--teal-dark);
+            font-weight: 600;
+        }
+
+        .sb-nav a.active svg {
+            stroke: var(--teal-dark);
+            opacity: 1;
+        }
+
+
+        /* Sidebar Footer */
+
+        .sb-foot {
+            padding: 14px;
+            border-top: 1px solid rgba(255,255,255,.14);
+        }
+
+        .sb-foot a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.75);
+
+            padding: 11px 12px;
+            border-radius: 11px;
+        }
+
+        .sb-foot a svg {
+            width: 17px;
+            height: 17px;
+            stroke: currentColor;
+        }
+
+        .sb-foot a:hover {
+            background: rgba(224,69,123,.25);
+            color: #fff;
+        }
+
+
+        /* Close Button */
+
+        .sb-close {
+            display: none;
+
+            position: absolute;
+            top: 16px;
+            right: 14px;
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 9px;
+            border: none;
+
+            background: rgba(255,255,255,.14);
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+        .sb-close svg {
+            width: 16px;
+            height: 16px;
+            stroke: #fff;
+        }
+
+
+        /* Mobile Overlay */
+
+        .sb-scrim {
+            display: none;
+
+            position: fixed;
+            inset: 0;
+
+            background: rgba(43,33,64,.45);
+
+            z-index: 35;
+        }
+
+        .sb-scrim.open {
+            display: block;
+        }
+
+
+        /* =========================================================
+           MAIN COLUMN
+        ========================================================= */
+
+        .main-col {
+            flex: 1;
+
+            margin-left: var(--sidebar-w);
+
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =========================================================
+           TOP NAVBAR
+        ========================================================= */
+
+        .topbar {
+            height: var(--topbar-h);
+
+            flex: none;
+
+            background: var(--surface);
+
+            border-bottom: 1px solid var(--line);
+
+            display: flex;
+            align-items: center;
+
+            gap: 16px;
+
+            padding: 0 26px;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 20;
+        }
+
+        .sb-toggle {
+            display: none;
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 10px;
+
+            border: 1px solid var(--line);
+
+            background: #fff;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            flex: none;
+        }
+
+        .sb-toggle svg {
+            width: 17px;
+            height: 17px;
+            stroke: var(--ink);
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .topbar-spacer {
+            flex: 1;
+        }
+
+
+        /* =========================================================
+           PROFILE MENU
+        ========================================================= */
+
+        .admin-menu {
+            position: relative;
+            flex: none;
+        }
+
+        .admin-trigger {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            background: #fff;
+
+            border: 1px solid var(--line);
+
+            padding: 6px 12px 6px 6px;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            font-size: 13.5px;
+            font-weight: 600;
+
+            color: var(--ink);
+
+            transition:
+                border-color .15s ease,
+                background .15s ease;
+
+            max-width: 190px;
+        }
+
+        .admin-trigger:hover,
+        .admin-trigger[aria-expanded="true"] {
+            border-color: var(--teal);
+            background: var(--sage-soft);
+        }
+
+        .admin-avatar {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                var(--teal),
+                var(--sage)
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: none;
+
+            overflow: hidden;
+        }
+
+        .admin-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .admin-avatar .initial {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .admin-trigger .admin-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100px;
+        }
+
+        .admin-trigger .chevron {
+            width: 13px;
+            height: 13px;
+
+            stroke: var(--ink-soft);
+
+            flex: none;
+
+            transition: transform .18s ease;
+        }
+
+        .admin-trigger[aria-expanded="true"] .chevron {
+            transform: rotate(180deg);
+        }
+
+
+        /* Dropdown */
+
+        .admin-dropdown {
+            position: absolute;
+
+            top: calc(100% + 10px);
+            right: 0;
+
+            min-width: 220px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 18px 36px -18px rgba(75,42,148,.35);
+
+            overflow: hidden;
+
+            max-height: 0;
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform: translateY(-6px);
+
+            transition:
+                max-height .22s ease,
+                opacity .18s ease,
+                transform .18s ease;
+        }
+
+        .admin-dropdown.open {
+            max-height: 280px;
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+            overflow-y: auto;
+        }
+
+        .admin-dropdown-head {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 14px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .admin-dropdown-head .admin-avatar {
+            width: 38px;
+            height: 38px;
+        }
+
+        .admin-dropdown-head .initial {
+            font-size: 15px;
+        }
+
+        .who .name {
+            display: block;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            color: var(--ink);
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .who .role {
+            display: block;
+
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .admin-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 12px 14px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: var(--ink);
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .admin-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .admin-dropdown a svg {
+            width: 15px;
+            height: 15px;
+
+            stroke: var(--teal);
+
+            flex: none;
+        }
+
+        .admin-dropdown a:hover {
+            background: var(--sage-soft);
+        }
+
+        .admin-dropdown a.logout-item {
+            color: var(--coral);
+        }
+
+        .admin-dropdown a.logout-item svg {
+            stroke: var(--coral);
+        }
+
+        .admin-dropdown a.logout-item:hover {
+            background: #FCE7EF;
+        }
+
+
+        /* =========================================================
+           CONTENT
+        ========================================================= */
+
+        .content {
+            padding: 32px 30px 60px;
+
+            max-width: 1200px;
+
+            width: 100%;
+
+            margin: 0 auto;
+        }
+
+
+        /* Back */
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 13.5px;
+            font-weight: 600;
+
+            color: var(--ink-soft);
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            margin-bottom: 14px;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+        .back-link:hover {
+            background: var(--sage-soft);
+            color: var(--teal-dark);
+        }
+
+        .back-link svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+        }
+
+
+        /* Page Header */
+
+        .page-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+
+            gap: 16px;
+
+            margin-bottom: 20px;
+
+            flex-wrap: wrap;
+        }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 28px;
+
+            margin: 0;
+
+            color: var(--teal-dark);
+        }
+
+        .page-description {
+            margin: 5px 0 0;
+
+            color: var(--ink-soft);
+
+            font-size: 13.5px;
+        }
+
+        .count-pill {
+            font-size: 12.5px;
+            font-weight: 600;
+
+            color: var(--teal-dark);
+
+            background: var(--sage-soft);
+
+            padding: 6px 14px;
+
+            border-radius: 999px;
+        }
+
+
+        /* =========================================================
+           TABLE CARD
+        ========================================================= */
+
+        .table-card {
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: var(--radius);
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 25px rgba(75,42,148,.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+
+            font-size: 11.5px;
+
+            font-weight: 700;
+
+            letter-spacing: .05em;
+
+            text-transform: uppercase;
+
+            color: var(--ink-faint);
+
+            padding: 15px 18px;
+
+            background: var(--sage-soft);
+
+            border-bottom: 1px solid var(--line);
+
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-top: 1px solid var(--line);
+
+            transition: background .12s ease;
+        }
+
+        tbody tr:first-child {
+            border-top: none;
+        }
+
+        tbody tr:hover {
+            background: var(--bg);
+        }
+
+        tbody td {
+            padding: 15px 18px;
+
+            font-size: 14px;
+
+            color: var(--ink);
+
+            vertical-align: middle;
+        }
+
+        td.no-cell {
+            color: var(--ink-faint);
+
+            font-weight: 600;
+
+            width: 55px;
+        }
+
+        td.work-cell {
+            font-weight: 600;
+            min-width: 180px;
+        }
+
+        td.name-cell {
+            font-weight: 600;
+        }
+
+        td.date-cell {
+            color: var(--ink-soft);
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
+
+        .status-tag {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            padding: 5px 11px;
+
+            border-radius: 999px;
+
+            white-space: nowrap;
+        }
+
+        .status-tag .dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+
+            flex: none;
+        }
+
+        .status-tag.completed {
+            background: var(--green-soft);
+            color: #0F7A6E;
+        }
+
+        .status-tag.pending {
+            background: var(--yellow-soft);
+            color: #8A6600;
+        }
+
+        .status-tag.working {
+            background: var(--sage-soft);
+            color: var(--teal-dark);
+        }
+
+        .status-tag.default {
+            background: #F1EDF7;
+            color: var(--ink-soft);
+        }
+
+
+        /* =========================================================
+           FEEDBACK BUTTON
+        ========================================================= */
+
+        .feedback-btn {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            background: var(--teal);
+
+            color: #fff;
+
+            padding: 8px 13px;
+
+            border-radius: 9px;
+
+            font-size: 12.5px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition:
+                background .15s ease,
+                transform .15s ease,
+                box-shadow .15s ease;
+        }
+
+        .feedback-btn svg {
+            width: 14px;
+            height: 14px;
+
+            stroke: currentColor;
+        }
+
+        .feedback-btn:hover {
+            background: var(--teal-dark);
+
+            color: #fff;
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 6px 15px rgba(75,42,148,.20);
+        }
+
+
+        .feedback-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            min-height: 42px;
+            padding: 5px 7px 5px 8px;
+            border-radius: 12px;
+            white-space: nowrap;
+            border: 1px solid rgba(31,182,166,.20);
+            background: linear-gradient(135deg, #F0FCF9, #E3F8F4);
+            box-shadow: 0 4px 12px rgba(31,182,166,.08);
+        }
+
+        .feedback-check { width: 29px; height: 29px; border-radius: 9px; display: flex; align-items: center; justify-content: center; background: var(--green); color: #fff; flex: none; box-shadow: 0 4px 10px rgba(31,182,166,.20); }
+        .feedback-check svg { width: 15px; height: 15px; stroke: currentColor; }
+        .feedback-info { display: flex; flex-direction: column; gap: 1px; line-height: 1.15; }
+        .feedback-title { font-size: 12px; font-weight: 700; color: #087A6D; }
+        .feedback-subtitle { font-size: 10px; font-weight: 500; color: #6B908B; }
+        .feedback-view { width: 28px; height: 28px; margin-left: 2px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: rgba(31,182,166,.10); color: #0F7A6E; transition: background .15s ease, color .15s ease, transform .15s ease; }
+        .feedback-view svg { width: 14px; height: 14px; stroke: currentColor; }
+        .feedback-view:hover { background: var(--green); color: #fff; transform: translateY(-1px); }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            text-align: center;
+
+            padding: 65px 24px;
+
+            color: var(--ink-soft);
+        }
+
+        .empty-icon {
+            width: 58px;
+            height: 58px;
+
+            border-radius: 16px;
+
+            margin-bottom: 16px;
+
+            background: var(--sage-soft);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-icon svg {
+            width: 27px;
+            height: 27px;
+
+            stroke: var(--teal);
+        }
+
+        .empty-state h2 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 19px;
+
+            margin: 0 0 7px;
+
+            color: var(--ink);
+        }
+
+        .empty-state p {
+            margin: 0;
+
+            font-size: 14px;
+
+            max-width: 350px;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .page-foot {
+            margin-top: 22px;
+
+            font-size: 13px;
+
+            color: var(--ink-soft);
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE SIDEBAR
+        ========================================================= */
+
+        @media (max-width: 960px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+
+                box-shadow:
+                    0 0 60px rgba(0,0,0,.25);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sb-close {
+                display: flex;
+            }
+
+            .main-col {
+                margin-left: 0;
+            }
+
+            .sb-toggle {
+                display: flex;
+            }
+        }
+
+
+        /* =========================================================
+           TABLET
+        ========================================================= */
+
+        @media (max-width: 800px) {
+
+            .content {
+                padding: 28px 20px 50px;
+            }
+
+            .table-card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 850px;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE CARD TABLE
+        ========================================================= */
+
+        @media (max-width: 640px) {
+
+            .topbar {
+                padding: 0 15px;
+
+                height: 60px;
+            }
+
+            .topbar-title {
+                font-size: 14px;
+            }
+
+            .admin-trigger {
+                padding-right: 7px;
+            }
+
+            .admin-trigger .admin-name,
+            .admin-trigger .chevron {
+                display: none;
+            }
+
+            .content {
+                padding: 24px 14px 40px;
+            }
+
+            .page-head {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+            .page-head h1 {
+                font-size: 25px;
+            }
+
+            .table-card {
+                background: transparent;
+
+                border: none;
+
+                box-shadow: none;
+
+                overflow: visible;
+            }
+
+            table,
+            thead,
+            tbody,
+            tr,
+            th,
+            td {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody tr {
+                background: var(--surface);
+
+                border: 1px solid var(--line);
+
+                border-radius: 16px;
+
+                margin-bottom: 14px;
+
+                padding: 7px 4px;
+
+                box-shadow:
+                    0 5px 18px rgba(75,42,148,.05);
+            }
+
+            tbody tr:hover {
+                background: var(--surface);
+            }
+
+            tbody td {
+                display: flex;
+
+                align-items: center;
+
+                justify-content: space-between;
+
+                gap: 15px;
+
+                padding: 11px 14px;
+
+                border-top: 1px dashed var(--line);
+
+                text-align: right;
+            }
+
+            tbody td:first-child {
+                border-top: none;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+
+                font-size: 10.5px;
+
+                font-weight: 700;
+
+                letter-spacing: .04em;
+
+                text-transform: uppercase;
+
+                color: var(--ink-faint);
+
+                flex: none;
+            }
+
+            td.no-cell {
+                display: none;
+            }
+
+            td.work-cell {
+                font-size: 14px;
+
+                text-align: right;
+            }
+
+            td.name-cell {
+                font-size: 14px;
+            }
+
+            td.date-cell {
+                white-space: normal;
+            }
+
+            .feedback-btn {
+                padding: 8px 11px;
+
+                font-size: 12px;
+            }
+
+            .feedback-status {
+                min-height: 40px;
+                padding: 5px 6px 5px 7px;
+                gap: 7px;
+            }
+            .feedback-check { width: 27px; height: 27px; }
+            .feedback-check svg { width: 14px; height: 14px; }
+            .feedback-title { font-size: 11.5px; }
+            .feedback-subtitle { font-size: 9.5px; }
+            .feedback-view { width: 27px; height: 27px; }
+
+            .page-foot {
+                font-size: 12px;
+            }
+        }
+
+
+        /* =========================================================
+           SMALL MOBILE
+        ========================================================= */
+
+        @media (max-width: 400px) {
+
+            .sb-brand {
+                padding-left: 18px;
+            }
+
+            .sb-nav {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .content {
+                padding-left: 11px;
+                padding-right: 11px;
+            }
+
+            .page-head h1 {
+                font-size: 23px;
+            }
+
+            .count-pill {
+                font-size: 11.5px;
+            }
+
+            tbody td {
+                padding-left: 11px;
+                padding-right: 11px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .sidebar,
+            .admin-dropdown,
+            .admin-trigger .chevron,
+            .back-link,
+            .feedback-btn {
+                transition: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="shell">
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Close button for mobile -->
+        <button
+            type="button"
+            class="sb-close"
+            id="sbClose"
+            aria-label="Close menu">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M18 6 6 18"/>
+                <path d="M6 6l12 12"/>
+
+            </svg>
+
+        </button>
+
+
+        <!-- Brand -->
+
+        <div class="sb-brand">
+
+            <span class="sb-brand-mark">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/>
+
+                </svg>
+
+            </span>
+
+            <span class="sb-brand-text">
+                Calmora
+                <span>Team Leader</span>
+            </span>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="sb-nav">
+
+            <div class="sb-section">
+                Overview
+            </div>
+
+            <a href="/myapp/teamleaderhome_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 11l9-7 9 7"/>
+                    <path d="M5 10v10h14V10"/>
+
+                </svg>
+
+                Dashboard
+
+            </a>
+
+
+            <div class="sb-section">
+                Team
+            </div>
+
+            <a href="/myapp/viewteammember/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+
+                </svg>
+
+                Team members
+
+            </a>
+
+
+            <div class="sb-section">
+                Work
+            </div>
+
+
+            <a href="/myapp/viewassignedwork/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+
+                </svg>
+
+                Assigned work
+
+            </a>
+
+
+            <!-- ACTIVE PAGE -->
+
+            <a
+                href="/myapp/teamleaderviewstatus/"
+                class="active">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 3v18h18"/>
+                    <path d="M7 15l4-6 3 4 5-8"/>
+
+                </svg>
+
+                Status
+
+            </a>
+
+
+            <a href="/myapp/viewworkandfeedback/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+
+                </svg>
+
+                Work &amp; feedback
+
+            </a>
+
+
+            <div class="sb-section">
+                Account
+            </div>
+
+
+            <a href="/myapp/teamleaderviewprofile/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M20 21a8 8 0 1 0-16 0"/>
+                    <circle cx="12" cy="8" r="5"/>
+
+                </svg>
+
+                View profile
+
+            </a>
+
+        </nav>
+
+
+        <!-- Logout -->
+
+        <div class="sb-foot">
+
+            <a href="/myapp/logout_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <path d="M16 17l5-5-5-5"/>
+                    <path d="M21 12H9"/>
+
+                </svg>
+
+                Log out
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Mobile overlay -->
+
+    <div
+        class="sb-scrim"
+        id="sbScrim">
+    </div>
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <div class="main-col">
+
+
+        <!-- =====================================================
+             TOPBAR
+        ====================================================== -->
+
+        <header class="topbar">
+
+            <!-- Mobile menu button -->
+
+            <button
+                type="button"
+                class="sb-toggle"
+                id="sbToggle"
+                aria-label="Open menu">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M4 7h16"/>
+                    <path d="M4 12h16"/>
+                    <path d="M4 17h16"/>
+
+                </svg>
+
+            </button>
+
+
+            <div class="topbar-title">
+                View Status
+            </div>
+
+
+            <div class="topbar-spacer"></div>
+
+
+            <!-- Profile -->
+
+            <div
+                class="admin-menu"
+                id="adminMenu">
+
+                <button
+                    type="button"
+                    class="admin-trigger"
+                    id="adminTrigger"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="adminDropdown">
+
+
+                    <span class="admin-avatar">
+
+                        {% if leader.photo %}
+
+                            <img
+                                src="{{ leader.photo.url }}"
+                                alt="{{ leader.name }}">
+
+                        {% else %}
+
+                            <span class="initial">
+                                {{ leader.name|default:"?"|slice:":1"|upper }}
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+
+                    <span class="admin-name">
+                        {{ leader.name }}
+                    </span>
+
+
+                    <svg
+                        class="chevron"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+
+                        <path d="M6 9l6 6 6-6"/>
+
+                    </svg>
+
+                </button>
+
+
+                <!-- Dropdown -->
+
+                <div
+                    class="admin-dropdown"
+                    id="adminDropdown"
+                    role="menu">
+
+
+                    <div class="admin-dropdown-head">
+
+                        <span class="admin-avatar">
+
+                            {% if leader.photo %}
+
+                                <img
+                                    src="{{ leader.photo.url }}"
+                                    alt="{{ leader.name }}">
+
+                            {% else %}
+
+                                <span class="initial">
+                                    {{ leader.name|default:"?"|slice:":1"|upper }}
+                                </span>
+
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="who">
+
+                            <span class="name">
+                                {{ leader.name }}
+                            </span>
+
+                            <span class="role">
+                                Team Leader
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        href="/myapp/teamleaderviewprofile/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M20 21a8 8 0 1 0-16 0"/>
+                            <circle cx="12" cy="8" r="5"/>
+
+                        </svg>
+
+                        View profile
+
+                    </a>
+
+
+                    <a
+                        href="/myapp/teamleaderchangepassword_get/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <rect
+                                x="4"
+                                y="11"
+                                width="16"
+                                height="10"
+                                rx="2"/>
+
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+
+                        </svg>
+
+                        Change password
+
+                    </a>
+
+
+                    <a
+                        class="logout-item"
+                        href="/myapp/logout_get/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <path d="M16 17l5-5-5-5"/>
+                            <path d="M21 12H9"/>
+
+                        </svg>
+
+                        Log out
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             PAGE CONTENT
+        ====================================================== -->
+
+        <main class="content">
+
+
+            <a
+                class="back-link"
+                href="/myapp/teamleaderhome_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+
+                </svg>
+
+                Back to dashboard
+
+            </a>
+
+
+            <!-- Page heading -->
+
+            <div class="page-head">
+
+                <div>
+
+                    <h1>
+                        Work Status
+                    </h1>
+
+                    <p class="page-description">
+                        Monitor assigned work and provide feedback to team members.
+                    </p>
+
+                </div>
+
+
+                <span class="count-pill">
+
+                    {{ data|length }}
+                    record{{ data|length|pluralize }}
+
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+                 DATA TABLE
+            ================================================== -->
+
+            {% if data %}
+
+            <div class="table-card">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>No</th>
+
+                            <th>Work</th>
+
+                            <th>Name</th>
+
+                            <th>Date</th>
+
+                            <th>Deadline</th>
+
+                            <th>Status</th>
+
+                            <th>Feedback</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for i in data %}
+
+                        <tr>
+
+                            <!-- Number -->
+
+                            <td
+                                class="no-cell"
+                                data-label="No">
+
+                                {{ forloop.counter }}
+
+                            </td>
+
+
+                            <!-- Work -->
+
+                            <td
+                                class="work-cell"
+                                data-label="Work">
+
+                                {{ i.ASSIGN.WORK.worktitle }}
+
+                            </td>
+
+
+                            <!-- Team member -->
+
+                            <td
+                                class="name-cell"
+                                data-label="Name">
+
+                                {{ i.TEAM_MEMBER.name }}
+
+                            </td>
+
+
+                            <!-- Date -->
+
+                            <td
+                                class="date-cell"
+                                data-label="Date">
+
+                                {{ i.date }}
+
+                            </td>
+
+
+                            <!-- Deadline -->
+
+                            <td
+                                class="date-cell"
+                                data-label="Deadline">
+
+                                {{ i.ASSIGN.WORK.deadline }}
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td data-label="Status">
+
+                                {% if i.status|lower == "completed" %}
+
+                                    <span class="status-tag completed">
+
+                                        <span class="dot"></span>
+
+                                        Completed
+
+                                    </span>
+
+
+                                {% elif i.status|lower == "working" %}
+
+                                    <span class="status-tag working">
+
+                                        <span class="dot"></span>
+
+                                        Working
+
+                                    </span>
+
+
+                                {% elif i.status|lower == "pending" %}
+
+                                    <span class="status-tag pending">
+
+                                        <span class="dot"></span>
+
+                                        Pending
+
+                                    </span>
+
+
+                                {% elif i.status %}
+
+                                    <span class="status-tag default">
+
+                                        <span class="dot"></span>
+
+                                        {{ i.status }}
+
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="status-tag default">
+
+                                        Not set
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Feedback -->
+
+                            <td data-label="Feedback">
+
+                                {% if i.feedback_exists %}
+
+                                    <span class="feedback-status feedbacked">
+
+                                        <span class="feedback-check">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M20 6L9 17l-5-5"/>
+                                            </svg>
+                                        </span>
+
+                                        <span class="feedback-info">
+                                            <span class="feedback-title">Feedback Sent</span>
+                                            <span class="feedback-subtitle">Already submitted</span>
+                                        </span>
+
+                                        <a class="feedback-view" href="/myapp/viewworkandfeedback/" aria-label="View feedback">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/>
+                                                <circle cx="12" cy="12" r="2.5"/>
+                                            </svg>
+                                        </a>
+
+                                    </span>
+
+                                {% else %}
+
+                                    <a
+                                        class="feedback-btn"
+                                        href="/myapp/sendfeedback_get/{{ i.id }}">
+
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round">
+
+                                            <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4-.9L3 21l1.9-4A8.5 8.5 0 1 1 21 11.5z"/>
+
+                                        </svg>
+
+                                        Send Feedback
+
+                                    </a>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% else %}
+
+            <!-- Empty state -->
+
+            <div class="table-card">
+
+                <div class="empty-state">
+
+                    <span class="empty-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M3 3v18h18"/>
+
+                            <path d="M7 15l4-6 3 4 5-8"/>
+
+                        </svg>
+
+                    </span>
+
+
+                    <h2>
+                        No status records found
+                    </h2>
+
+
+                    <p>
+                        Once team members update their assigned work,
+                        their status will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <footer class="page-foot">
+                Calmora  · Team Leader console
+            </footer>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =============================================================
+     JAVASCRIPT
+============================================================== -->
+
+<script>
+
+(function () {
+
+    /* ---------------------------------------------------------
+       SIDEBAR
+    --------------------------------------------------------- */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const toggle =
+        document.getElementById("sbToggle");
+
+    const close =
+        document.getElementById("sbClose");
+
+    const scrim =
+        document.getElementById("sbScrim");
+
+
+    function openSidebar() {
+
+        sidebar.classList.add("open");
+
+        scrim.classList.add("open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("open");
+
+        scrim.classList.remove("open");
+
+    }
+
+
+    if (toggle) {
+
+        toggle.addEventListener(
+            "click",
+            openSidebar
+        );
+
+    }
+
+
+    if (close) {
+
+        close.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    if (scrim) {
+
+        scrim.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    /* ---------------------------------------------------------
+       ESCAPE KEY
+    --------------------------------------------------------- */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeSidebar();
+
+                closeAdminDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* ---------------------------------------------------------
+       PROFILE DROPDOWN
+    --------------------------------------------------------- */
+
+    const adminMenu =
+        document.getElementById("adminMenu");
+
+    const adminTrigger =
+        document.getElementById("adminTrigger");
+
+    const adminDropdown =
+        document.getElementById("adminDropdown");
+
+
+    function closeAdminDropdown() {
+
+        if (!adminDropdown || !adminTrigger) {
+            return;
+        }
+
+        adminDropdown.classList.remove("open");
+
+        adminTrigger.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    if (adminTrigger && adminDropdown) {
+
+        adminTrigger.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                const isOpen =
+                    adminDropdown.classList.toggle("open");
+
+                adminTrigger.setAttribute(
+                    "aria-expanded",
+                    isOpen ? "true" : "false"
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    adminMenu &&
+                    !adminMenu.contains(event.target)
+                ) {
+
+                    closeAdminDropdown();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ---------------------------------------------------------
+       CLOSE MOBILE SIDEBAR AFTER NAVIGATION
+    --------------------------------------------------------- */
+
+    const sidebarLinks =
+        document.querySelectorAll(".sb-nav a");
+
+    sidebarLinks.forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                if (window.innerWidth <= 960) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* ---------------------------------------------------------
+       RESET MOBILE SIDEBAR ON DESKTOP
+    --------------------------------------------------------- */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (window.innerWidth > 960) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+})();
+
+</script>
+
+</body>
+</html>

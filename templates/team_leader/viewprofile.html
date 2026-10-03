@@ -1,0 +1,254 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>View Profile</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#<p>{{ data.name }}</p>#}
+{#<p>{{ data.email }}</p>#}
+{#<p>{{ data.phone }}</p>#}
+{#<p><img src="{{ data.photo.url }}" width="100" height="100"></p>#}
+{#<p>{{ data.gender }}</p>#}
+{#<p>{{ data.dob }}</p>#}
+{#<p>{{ data.qualification }}</p>#}
+{#<p>{{ data.experience }}</p>#}
+{#</body>#}
+{#</html>#}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>View Profile · Calmora </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6FB;
+    --surface:#FFFFFF;
+    --ink:#2B2140;
+    --ink-soft:#6B5F82;
+    --ink-faint:#9B8FB3;
+    --teal:#6C3FC9;
+    --teal-dark:#4B2A94;
+    --sage:#B79CE8;
+    --sage-soft:#F0E9FB;
+    --coral:#E0457B;
+    --line:#E7DFF2;
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{text-decoration:none;color:inherit;}
+  a:focus-visible, button:focus-visible{outline:3px solid var(--sage); outline-offset:3px;}
+
+  .topbar{
+    background:var(--surface); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:14px;
+    padding:0 24px; height:64px;
+  }
+  .back-link{
+    display:flex; align-items:center; gap:8px;
+    font-size:13.5px; font-weight:600; color:var(--ink-soft);
+    padding:8px 13px; border-radius:999px;
+    transition:background .15s ease, color .15s ease;
+  }
+  .back-link:hover{ background:var(--sage-soft); color:var(--teal-dark); }
+  .back-link svg{ width:15px;height:15px; stroke:currentColor; }
+  .topbar-title{ font-size:15px; font-weight:600; color:var(--ink); }
+
+  main{ max-width:920px; margin:0 auto; padding:36px 20px 60px; }
+
+  .layout{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:22px;
+    align-items:start;
+  }
+  @media (max-width:760px){ .layout{ grid-template-columns:1fr; } }
+
+  /* ---------- Left: identity panel ---------- */
+  .id-panel{
+    background:linear-gradient(165deg,var(--teal-dark),var(--teal) 80%);
+    border-radius:22px;
+    padding:32px 26px;
+    color:#fff;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .id-panel::after{
+    content:""; position:absolute; left:-50px; bottom:-60px; width:180px; height:180px;
+    background:rgba(255,255,255,.07); border-radius:50%;
+  }
+  .avatar{
+    position:relative; z-index:1;
+    width:104px; height:104px; border-radius:50%;
+    border:4px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.14);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px; overflow:hidden;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .avatar .initial{ font-size:36px; font-weight:700; color:#fff; font-family:'Fraunces',serif; }
+  .id-panel h1{
+    position:relative; z-index:1;
+    font-family:'Fraunces',serif; font-weight:500; font-size:20px;
+    margin:0 0 8px; line-height:1.25; word-break:break-word;
+  }
+  .id-panel .role-badge{
+    position:relative; z-index:1;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; color:#fff;
+    background:rgba(255,255,255,.16); padding:5px 13px; border-radius:999px;
+  }
+  .id-divider{
+    position:relative; z-index:1;
+    height:1px; background:rgba(255,255,255,.2); margin:22px 0 18px;
+  }
+  .id-mini{
+    position:relative; z-index:1;
+    display:flex; align-items:center; gap:9px;
+    font-size:13px; color:rgba(255,255,255,.85);
+    text-align:left; margin-bottom:10px;
+  }
+  .id-mini:last-child{ margin-bottom:0; }
+  .id-mini svg{ width:15px;height:15px; stroke:rgba(255,255,255,.75); flex:none; }
+  .id-mini span{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .id-mini span.empty{ opacity:.55; font-style:italic; }
+
+  /* ---------- Right: details panel ---------- */
+  .detail-panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:8px 0;
+  }
+  .detail-panel-head{
+    padding:20px 26px 14px;
+    font-size:13.5px; font-weight:700; color:var(--ink);
+    text-transform:uppercase; letter-spacing:.05em;
+  }
+  .detail-row{
+    display:flex; align-items:center; gap:16px;
+    padding:15px 26px;
+    border-top:1px solid var(--line);
+  }
+  .detail-row .d-icon{
+    width:38px; height:38px; border-radius:11px; flex:none;
+    background:var(--sage-soft);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .detail-row .d-icon svg{ width:17px;height:17px; stroke:var(--teal); }
+  .detail-row .d-text{ min-width:0; flex:1; }
+  .detail-row .d-text .d-label{
+    font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:3px;
+  }
+  .detail-row .d-text .d-value{
+    font-size:15px; font-weight:500; color:var(--ink);
+    word-break:break-word;
+  }
+  .detail-row .d-text .d-value.empty{
+    color:var(--ink-faint); font-weight:400; font-style:italic;
+  }
+
+  footer.page-foot{ max-width:920px; margin:22px auto 0; padding:0 20px; font-size:13px; color:var(--ink-soft); }
+
+  @media (prefers-reduced-motion:reduce){
+    .back-link{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="back-link" href="/myapp/teamleaderhome_get/">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to dashboard
+    </a>
+    <span class="topbar-title">My Profile</span>
+  </header>
+
+  <main>
+    <div class="layout">
+
+      <aside class="id-panel">
+        <span class="avatar">
+          {% if data.photo %}
+            <img src="{{ data.photo.url }}" alt="{{ data.name }}">
+          {% else %}
+            <span class="initial">{{ data.name|default:"?"|slice:":1"|upper }}</span>
+          {% endif %}
+        </span>
+        <h1>{{ data.name|default:"Unnamed team leader" }}</h1>
+        <span class="role-badge">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+          Team Leader
+        </span>
+
+        <div class="id-divider"></div>
+
+        <div class="id-mini">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span class="{% if not data.email %}empty{% endif %}">{{ data.email|default:"No email on file" }}</span>
+        </div>
+        <div class="id-mini">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+          <span class="{% if not data.phone %}empty{% endif %}">{{ data.phone|default:"No phone on file" }}</span>
+        </div>
+      </aside>
+
+      <section class="detail-panel">
+        <div class="detail-panel-head">Personal details</div>
+
+        <div class="detail-row">
+          <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg></span>
+          <span class="d-text">
+            <span class="d-label">Gender</span>
+            <span class="d-value {% if not data.gender %}empty{% endif %}">{{ data.gender|default:"Not provided" }}</span>
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+          <span class="d-text">
+            <span class="d-label">Date of birth</span>
+            <span class="d-value {% if not data.dob %}empty{% endif %}">{{ data.dob|default:"Not provided" }}</span>
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
+          <span class="d-text">
+            <span class="d-label">Qualification</span>
+            <span class="d-value {% if not data.qualification %}empty{% endif %}">{{ data.qualification|default:"Not provided" }}</span>
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="d-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+          <span class="d-text">
+            <span class="d-label">Experience</span>
+            <span class="d-value {% if not data.experience %}empty{% endif %}">{{ data.experience|default:"Not provided" }}</span>
+          </span>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="page-foot">Calmora  · Team Leader console</footer>
+  </main>
+
+</body>
+</html>

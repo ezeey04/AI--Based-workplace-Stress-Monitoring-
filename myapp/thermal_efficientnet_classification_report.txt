@@ -1,0 +1,14 @@
+EfficientNetB0 Thermal Stress Detection
+
+Test Accuracy: 88.05%
+
+Validation Threshold: 0.47
+
+              precision    recall  f1-score   support
+
+  Non-Stress     0.8971    0.7531    0.8188        81
+      Stress     0.8734    0.9517    0.9109       145
+
+    accuracy                         0.8805       226
+   macro avg     0.8852    0.8524    0.8648       226
+weighted avg     0.8819    0.8805    0.8779       226

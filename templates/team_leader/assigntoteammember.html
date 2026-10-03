@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Assign Work · Calmora </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg: #FAF6FB;
+            --surface: #FFFFFF;
+
+            --ink: #2B2140;
+            --ink-soft: #6B5F82;
+            --ink-faint: #9B8FB3;
+
+            --teal: #6C3FC9;
+            --teal-dark: #4B2A94;
+
+            --sage: #B79CE8;
+            --sage-soft: #F0E9FB;
+
+            --coral: #E0457B;
+
+            --line: #E7DFF2;
+
+            --green: #1FB6A6;
+            --green-soft: #DBF6F1;
+
+            --yellow: #F2B705;
+            --yellow-soft: #FDF0CC;
+
+            --radius: 18px;
+            --sidebar-w: 250px;
+            --topbar-h: 64px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        select {
+            font-family: inherit;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        select:focus-visible {
+            outline: 3px solid var(--sage);
+            outline-offset: 3px;
+        }
+
+        .shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: var(--sidebar-w);
+            flex: none;
+
+            background: linear-gradient(
+                190deg,
+                var(--teal-dark),
+                var(--teal) 70%
+            );
+
+            color: #fff;
+
+            display: flex;
+            flex-direction: column;
+
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+
+            z-index: 40;
+
+            transition: transform .22s ease;
+        }
+
+        .sb-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 22px 22px 18px;
+        }
+
+        .sb-brand-mark {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.16);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: none;
+        }
+
+        .sb-brand-mark svg {
+            width: 18px;
+            height: 18px;
+            stroke: #fff;
+        }
+
+        .sb-brand-text {
+            font-size: 14.5px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .sb-brand-text span {
+            display: block;
+
+            font-size: 11.5px;
+            font-weight: 500;
+
+            opacity: .7;
+        }
+
+        .sb-nav {
+            flex: 1;
+
+            padding: 10px 14px;
+
+            overflow-y: auto;
+        }
+
+        .sb-section {
+            font-size: 11px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+            letter-spacing: .06em;
+
+            opacity: .55;
+
+            padding: 16px 10px 8px;
+        }
+
+        .sb-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.82);
+
+            padding: 11px 12px;
+
+            border-radius: 11px;
+
+            margin-bottom: 2px;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+        .sb-nav a svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: currentColor;
+
+            flex: none;
+
+            opacity: .9;
+        }
+
+        .sb-nav a:hover {
+            background: rgba(255,255,255,.10);
+            color: #fff;
+        }
+
+        .sb-nav a.active {
+            background: #fff;
+
+            color: var(--teal-dark);
+
+            font-weight: 600;
+        }
+
+        .sb-nav a.active svg {
+            stroke: var(--teal-dark);
+            opacity: 1;
+        }
+
+        .sb-foot {
+            padding: 14px;
+
+            border-top: 1px solid rgba(255,255,255,.14);
+        }
+
+        .sb-foot a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.75);
+
+            padding: 11px 12px;
+
+            border-radius: 11px;
+        }
+
+        .sb-foot a svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: currentColor;
+        }
+
+        .sb-foot a:hover {
+            background: rgba(224,69,123,.25);
+            color: #fff;
+        }
+
+        .sb-close {
+            display: none;
+
+            position: absolute;
+
+            top: 16px;
+            right: 14px;
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 9px;
+
+            border: none;
+
+            background: rgba(255,255,255,.14);
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+        .sb-close svg {
+            width: 16px;
+            height: 16px;
+
+            stroke: #fff;
+        }
+
+        .sb-scrim {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(43,33,64,.45);
+
+            z-index: 35;
+        }
+
+        .sb-scrim.open {
+            display: block;
+        }
+
+        /* MAIN */
+
+        .main-col {
+            flex: 1;
+
+            margin-left: var(--sidebar-w);
+
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            height: var(--topbar-h);
+
+            flex: none;
+
+            background: var(--surface);
+
+            border-bottom: 1px solid var(--line);
+
+            display: flex;
+            align-items: center;
+
+            gap: 16px;
+
+            padding: 0 26px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 20;
+        }
+
+        .sb-toggle {
+            display: none;
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 10px;
+
+            border: 1px solid var(--line);
+
+            background: #fff;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            flex: none;
+        }
+
+        .sb-toggle svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: var(--ink);
+        }
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+
+            color: var(--ink);
+        }
+
+        .topbar-spacer {
+            flex: 1;
+        }
+
+        /* PROFILE */
+
+        .admin-menu {
+            position: relative;
+            flex: none;
+        }
+
+        .admin-trigger {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            background: #fff;
+
+            border: 1px solid var(--line);
+
+            padding: 6px 12px 6px 6px;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            font-size: 13.5px;
+            font-weight: 600;
+
+            color: var(--ink);
+
+            transition:
+                border-color .15s ease,
+                background .15s ease;
+
+            max-width: 190px;
+        }
+
+        .admin-trigger:hover,
+        .admin-trigger[aria-expanded="true"] {
+            border-color: var(--teal);
+            background: var(--sage-soft);
+        }
+
+        .admin-avatar {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                var(--teal),
+                var(--sage)
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: none;
+
+            overflow: hidden;
+        }
+
+        .admin-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        .admin-avatar .initial {
+            font-size: 12.5px;
+            font-weight: 700;
+
+            color: #fff;
+        }
+
+        .admin-trigger .admin-name {
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            max-width: 100px;
+        }
+
+        .admin-trigger .chevron {
+            width: 13px;
+            height: 13px;
+
+            stroke: var(--ink-soft);
+
+            flex: none;
+
+            transition: transform .18s ease;
+        }
+
+        .admin-trigger[aria-expanded="true"] .chevron {
+            transform: rotate(180deg);
+        }
+
+        .admin-dropdown {
+            position: absolute;
+
+            top: calc(100% + 10px);
+            right: 0;
+
+            min-width: 220px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 18px 36px -18px rgba(75,42,148,.35);
+
+            overflow: hidden;
+
+            max-height: 0;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform: translateY(-6px);
+
+            transition:
+                max-height .22s ease,
+                opacity .18s ease,
+                transform .18s ease;
+        }
+
+        .admin-dropdown.open {
+            max-height: 280px;
+
+            opacity: 1;
+
+            pointer-events: auto;
+
+            transform: translateY(0);
+
+            overflow-y: auto;
+        }
+
+        .admin-dropdown-head {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 14px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .admin-dropdown-head .admin-avatar {
+            width: 38px;
+            height: 38px;
+        }
+
+        .admin-dropdown-head .initial {
+            font-size: 15px;
+        }
+
+        .who .name {
+            display: block;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            color: var(--ink);
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+        .who .role {
+            display: block;
+
+            font-size: 12px;
+
+            color: var(--ink-soft);
+        }
+
+        .admin-dropdown a {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 14px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: var(--ink);
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .admin-dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .admin-dropdown a svg {
+            width: 15px;
+            height: 15px;
+
+            stroke: var(--teal);
+
+            flex: none;
+        }
+
+        .admin-dropdown a:hover {
+            background: var(--sage-soft);
+        }
+
+        .admin-dropdown a.logout-item {
+            color: var(--coral);
+        }
+
+        .admin-dropdown a.logout-item svg {
+            stroke: var(--coral);
+        }
+
+        .admin-dropdown a.logout-item:hover {
+            background: #FCE7EF;
+        }
+
+        /* CONTENT */
+
+        .content {
+            padding: 32px 30px 60px;
+
+            max-width: 1200px;
+
+            width: 100%;
+
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 13.5px;
+
+            font-weight: 600;
+
+            color: var(--ink-soft);
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            margin-bottom: 14px;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+        .back-link:hover {
+            background: var(--sage-soft);
+
+            color: var(--teal-dark);
+        }
+
+        .back-link svg {
+            width: 15px;
+            height: 15px;
+
+            stroke: currentColor;
+        }
+
+        .page-head {
+            display: flex;
+
+            align-items: baseline;
+
+            justify-content: space-between;
+
+            gap: 16px;
+
+            margin-bottom: 24px;
+
+            flex-wrap: wrap;
+        }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 28px;
+
+            margin: 0;
+
+            color: var(--teal-dark);
+        }
+
+        .page-description {
+            margin: 5px 0 0;
+
+            color: var(--ink-soft);
+
+            font-size: 13.5px;
+        }
+
+        /* CARD */
+
+        .assign-card {
+            max-width: 650px;
+
+            margin: 15px auto 0;
+
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: var(--radius);
+
+            padding: 32px;
+
+            box-shadow:
+                0 8px 25px rgba(75,42,148,.05);
+        }
+
+        .assign-icon {
+            width: 58px;
+            height: 58px;
+
+            border-radius: 16px;
+
+            background: var(--sage-soft);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 20px;
+        }
+
+        .assign-icon svg {
+            width: 28px;
+            height: 28px;
+
+            stroke: var(--teal);
+        }
+
+        .assign-card h2 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 22px;
+
+            margin: 0 0 8px;
+
+            color: var(--teal-dark);
+        }
+
+        .assign-card-description {
+            margin: 0 0 25px;
+
+            color: var(--ink-soft);
+
+            font-size: 13.5px;
+
+            line-height: 1.6;
+        }
+
+        /* MESSAGE */
+
+        .message {
+            padding: 13px 16px;
+
+            border-radius: 10px;
+
+            margin-bottom: 20px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            border: 1px solid transparent;
+        }
+
+        .message-success {
+            background: #DCFCE7;
+
+            color: #15803D;
+
+            border-color: #BBF7D0;
+        }
+
+        .message-error {
+            background: #FEE2E2;
+
+            color: #B91C1C;
+
+            border-color: #FECACA;
+        }
+
+        /* WORK INFORMATION */
+
+        .work-info {
+            background: var(--sage-soft);
+
+            border: 1px solid var(--line);
+
+            border-radius: 12px;
+
+            padding: 14px 16px;
+
+            margin-bottom: 24px;
+        }
+
+        .work-info-label {
+            display: block;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .05em;
+
+            color: var(--ink-soft);
+
+            margin-bottom: 4px;
+        }
+
+        .work-info-title {
+            display: block;
+
+            font-size: 15px;
+
+            font-weight: 600;
+
+            color: var(--teal-dark);
+        }
+
+        /* FORM */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: var(--ink);
+
+            margin-bottom: 9px;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper svg {
+            position: absolute;
+
+            right: 15px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 17px;
+            height: 17px;
+
+            stroke: var(--ink-soft);
+
+            pointer-events: none;
+        }
+
+        select {
+            width: 100%;
+
+            height: 50px;
+
+            padding: 0 45px 0 14px;
+
+            appearance: none;
+
+            -webkit-appearance: none;
+
+            border: 1px solid var(--line);
+
+            border-radius: 11px;
+
+            background: #fff;
+
+            color: var(--ink);
+
+            font-size: 14px;
+
+            outline: none;
+
+            cursor: pointer;
+
+            transition:
+                border-color .15s ease,
+                box-shadow .15s ease;
+        }
+
+        select:hover {
+            border-color: var(--sage);
+        }
+
+        select:focus {
+            border-color: var(--teal);
+
+            box-shadow:
+                0 0 0 3px rgba(108,63,201,.10);
+        }
+
+        /* BUTTON */
+
+        .assign-btn {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            width: 100%;
+
+            min-height: 46px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: var(--teal);
+
+            color: #fff;
+
+            padding: 10px 18px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                background .15s ease,
+                transform .15s ease,
+                box-shadow .15s ease;
+        }
+
+        .assign-btn svg {
+            width: 16px;
+            height: 16px;
+
+            stroke: currentColor;
+        }
+
+        .assign-btn:hover {
+            background: var(--teal-dark);
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 6px 15px rgba(75,42,148,.20);
+        }
+
+        .page-foot {
+            margin-top: 25px;
+
+            font-size: 13px;
+
+            color: var(--ink-soft);
+
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 960px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+
+                box-shadow:
+                    0 0 60px rgba(0,0,0,.25);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sb-close {
+                display: flex;
+            }
+
+            .main-col {
+                margin-left: 0;
+            }
+
+            .sb-toggle {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .content {
+                padding: 28px 20px 50px;
+            }
+
+            .assign-card {
+                padding: 27px 23px;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .topbar {
+                padding: 0 15px;
+
+                height: 60px;
+            }
+
+            .topbar-title {
+                font-size: 14px;
+            }
+
+            .admin-trigger {
+                padding-right: 7px;
+            }
+
+            .admin-trigger .admin-name,
+            .admin-trigger .chevron {
+                display: none;
+            }
+
+            .content {
+                padding: 24px 14px 40px;
+            }
+
+            .page-head {
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 8px;
+            }
+
+            .page-head h1 {
+                font-size: 25px;
+            }
+
+            .assign-card {
+                margin-top: 8px;
+
+                padding: 24px 18px;
+
+                border-radius: 16px;
+            }
+
+            .assign-card h2 {
+                font-size: 21px;
+            }
+
+            .assign-card-description {
+                font-size: 13px;
+            }
+
+            select {
+                height: 48px;
+            }
+
+            .assign-btn {
+                min-height: 48px;
+            }
+
+            .page-foot {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+
+            .sb-brand {
+                padding-left: 18px;
+            }
+
+            .sb-nav {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .content {
+                padding-left: 11px;
+                padding-right: 11px;
+            }
+
+            .page-head h1 {
+                font-size: 23px;
+            }
+
+            .assign-card {
+                padding: 22px 16px;
+            }
+
+            .assign-icon {
+                width: 52px;
+                height: 52px;
+            }
+
+            .assign-card h2 {
+                font-size: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .sidebar,
+            .admin-dropdown,
+            .admin-trigger .chevron,
+            .back-link,
+            .assign-btn,
+            select {
+                transition: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="shell">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <button
+            type="button"
+            class="sb-close"
+            id="sbClose"
+            aria-label="Close menu">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M18 6 6 18"/>
+                <path d="M6 6l12 12"/>
+
+            </svg>
+
+        </button>
+
+
+        <div class="sb-brand">
+
+            <span class="sb-brand-mark">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/>
+
+                </svg>
+
+            </span>
+
+
+            <span class="sb-brand-text">
+
+                Calmora
+
+                <span>
+                    Team Leader
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <nav class="sb-nav">
+
+            <div class="sb-section">
+                Overview
+            </div>
+
+
+            <a href="/myapp/teamleaderhome_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 11l9-7 9 7"/>
+                    <path d="M5 10v10h14V10"/>
+
+                </svg>
+
+                Dashboard
+
+            </a>
+
+
+            <div class="sb-section">
+                Team
+            </div>
+
+
+            <a href="/myapp/viewteammember/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+
+                </svg>
+
+                Team members
+
+            </a>
+
+
+            <div class="sb-section">
+                Work
+            </div>
+
+
+            <a href="/myapp/viewassignedwork/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+
+                </svg>
+
+                Assigned work
+
+            </a>
+
+
+            <a
+                href="/myapp/assignworktomember_get/"
+                class="active">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M12 5v14"/>
+                    <path d="M5 12h14"/>
+
+                </svg>
+
+                Assign work
+
+            </a>
+
+
+            <a href="/myapp/teamleaderviewstatus/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 3v18h18"/>
+                    <path d="M7 15l4-6 3 4 5-8"/>
+
+                </svg>
+
+                Status
+
+            </a>
+
+
+            <a href="/myapp/viewworkandfeedback/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+
+                </svg>
+
+                Work &amp; feedback
+
+            </a>
+
+
+            <div class="sb-section">
+                Account
+            </div>
+
+
+            <a href="/myapp/teamleaderviewprofile/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M20 21a8 8 0 1 0-16 0"/>
+                    <circle cx="12" cy="8" r="5"/>
+
+                </svg>
+
+                View profile
+
+            </a>
+
+        </nav>
+
+
+        <div class="sb-foot">
+
+            <a href="/myapp/logout_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <path d="M16 17l5-5-5-5"/>
+                    <path d="M21 12H9"/>
+
+                </svg>
+
+                Log out
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <div
+        class="sb-scrim"
+        id="sbScrim">
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="main-col">
+
+
+        <header class="topbar">
+
+
+            <button
+                type="button"
+                class="sb-toggle"
+                id="sbToggle"
+                aria-label="Open menu">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M4 7h16"/>
+                    <path d="M4 12h16"/>
+                    <path d="M4 17h16"/>
+
+                </svg>
+
+            </button>
+
+
+            <div class="topbar-title">
+                Assign Work
+            </div>
+
+
+            <div class="topbar-spacer"></div>
+
+
+            <div
+                class="admin-menu"
+                id="adminMenu">
+
+
+                <button
+                    type="button"
+                    class="admin-trigger"
+                    id="adminTrigger"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="adminDropdown">
+
+
+                    <span class="admin-avatar">
+
+                        {% if leader.photo %}
+
+                            <img
+                                src="{{ leader.photo.url }}"
+                                alt="{{ leader.name }}">
+
+                        {% else %}
+
+                            <span class="initial">
+                                {{ leader.name|default:"?"|slice:":1"|upper }}
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+
+                    <span class="admin-name">
+                        {{ leader.name }}
+                    </span>
+
+
+                    <svg
+                        class="chevron"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+
+                        <path d="M6 9l6 6 6-6"/>
+
+                    </svg>
+
+
+                </button>
+
+
+                <div
+                    class="admin-dropdown"
+                    id="adminDropdown"
+                    role="menu">
+
+
+                    <div class="admin-dropdown-head">
+
+                        <span class="admin-avatar">
+
+                            {% if leader.photo %}
+
+                                <img
+                                    src="{{ leader.photo.url }}"
+                                    alt="{{ leader.name }}">
+
+                            {% else %}
+
+                                <span class="initial">
+                                    {{ leader.name|default:"?"|slice:":1"|upper }}
+                                </span>
+
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="who">
+
+                            <span class="name">
+                                {{ leader.name }}
+                            </span>
+
+                            <span class="role">
+                                Team Leader
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        href="/myapp/teamleaderviewprofile/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M20 21a8 8 0 1 0-16 0"/>
+                            <circle cx="12" cy="8" r="5"/>
+
+                        </svg>
+
+                        View profile
+
+                    </a>
+
+
+                    <a
+                        href="/myapp/teamleaderchangepassword_get/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <rect
+                                x="4"
+                                y="11"
+                                width="16"
+                                height="10"
+                                rx="2"/>
+
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+
+                        </svg>
+
+                        Change password
+
+                    </a>
+
+
+                    <a
+                        class="logout-item"
+                        href="/myapp/logout_get/"
+                        role="menuitem">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <path d="M16 17l5-5-5-5"/>
+                            <path d="M21 12H9"/>
+
+                        </svg>
+
+                        Log out
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <main class="content">
+
+
+            <a
+                class="back-link"
+                href="/myapp/teamleaderhome_get/">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+
+                </svg>
+
+                Back to dashboard
+
+            </a>
+
+
+            <div class="page-head">
+
+                <div>
+
+                    <h1>
+                        Assign Work
+                    </h1>
+
+                    <p class="page-description">
+                        Assign available work to a team member.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="assign-card">
+
+
+                <div class="assign-icon">
+
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+
+                        <circle cx="9" cy="7" r="4"/>
+
+                        <path d="M3 21v-2a6 6 0 0 1 12 0v2"/>
+
+                        <path d="M19 8v6"/>
+
+                        <path d="M16 11h6"/>
+
+                    </svg>
+
+                </div>
+
+
+                <h2>
+                    Assign Work to Team Member
+                </h2>
+
+
+                <p class="assign-card-description">
+                    Select a team member from your team to assign the work.
+                </p>
+
+
+                <!-- SUCCESS / ERROR MESSAGE -->
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                        {% if message.tags == 'error' %}
+
+                            <div class="message message-error">
+                                {{ message }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="message message-success">
+                                {{ message }}
+                            </div>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                {% endif %}
+
+
+                <!-- SELECTED WORK -->
+
+                <div class="work-info">
+
+                    <span class="work-info-label">
+                        Selected Work
+                    </span>
+
+                    <span class="work-info-title">
+                        {{ work.WORK.worktitle }}
+                    </span>
+
+                </div>
+
+
+                <!-- FORM -->
+
+                <form
+                    action="/myapp/assignworktomember_post/"
+                    method="POST">
+
+                    {% csrf_token %}
+
+
+                    <input
+                        type="hidden"
+                        name="assign_id"
+                        value="{{ work.id }}">
+
+
+                    <div class="form-group">
+
+                        <label
+                            class="form-label"
+                            for="team_member">
+
+                            Select Team Member
+
+                        </label>
+
+
+                        <div class="select-wrapper">
+
+                            <select
+                                name="team_member"
+                                id="team_member"
+                                required>
+
+                                <option value="">
+                                    -- Select Team Member --
+                                </option>
+
+
+                                {% for i in data %}
+
+                                    <option value="{{ i.id }}">
+                                        {{ i.name }}
+                                    </option>
+
+                                {% endfor %}
+
+
+                            </select>
+
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round">
+
+                                <path d="M6 9l6 6 6-6"/>
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="assign-btn">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M12 5v14"/>
+                            <path d="M5 12h14"/>
+
+                        </svg>
+
+                        Assign Work
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+
+            <footer class="page-foot">
+                 Calmora · Team Leader console
+            </footer>
+
+
+        </main>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+(function () {
+
+    /* SIDEBAR */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const toggle =
+        document.getElementById("sbToggle");
+
+    const close =
+        document.getElementById("sbClose");
+
+    const scrim =
+        document.getElementById("sbScrim");
+
+
+    function openSidebar() {
+
+        sidebar.classList.add("open");
+
+        scrim.classList.add("open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("open");
+
+        scrim.classList.remove("open");
+
+    }
+
+
+    if (toggle) {
+
+        toggle.addEventListener(
+            "click",
+            openSidebar
+        );
+
+    }
+
+
+    if (close) {
+
+        close.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    if (scrim) {
+
+        scrim.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+    }
+
+
+    /* PROFILE DROPDOWN */
+
+    const adminMenu =
+        document.getElementById("adminMenu");
+
+    const adminTrigger =
+        document.getElementById("adminTrigger");
+
+    const adminDropdown =
+        document.getElementById("adminDropdown");
+
+
+    function closeAdminDropdown() {
+
+        if (!adminDropdown || !adminTrigger) {
+            return;
+        }
+
+        adminDropdown.classList.remove("open");
+
+        adminTrigger.setAttribute(
+            "aria-expanded",
+            "false"
+        );
+
+    }
+
+
+    if (adminTrigger && adminDropdown) {
+
+        adminTrigger.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                const isOpen =
+                    adminDropdown.classList.toggle("open");
+
+                adminTrigger.setAttribute(
+                    "aria-expanded",
+                    isOpen ? "true" : "false"
+                );
+
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    adminMenu &&
+                    !adminMenu.contains(event.target)
+                ) {
+
+                    closeAdminDropdown();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* ESCAPE KEY */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeSidebar();
+
+                closeAdminDropdown();
+
+            }
+
+        }
+    );
+
+
+    /* CLOSE MOBILE SIDEBAR */
+
+    const sidebarLinks =
+        document.querySelectorAll(".sb-nav a");
+
+
+    sidebarLinks.forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                if (window.innerWidth <= 960) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* RESET MOBILE SIDEBAR ON DESKTOP */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (window.innerWidth > 960) {
+
+                closeSidebar();
+
+            }
+
+        }
+    );
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

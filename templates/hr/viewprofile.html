@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Profile · Calmora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6FB;
+    --surface:#FFFFFF;
+    --ink:#2B2140;
+    --ink-soft:#6B5F82;
+    --teal:#6C3FC9;
+    --teal-dark:#4B2A94;
+    --sage:#B79CE8;
+    --sage-soft:#F0E9FB;
+    --coral:#E0457B;
+    --line:#E7DFF2;
+    --radius:16px;
+    --navbar-h:64px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:var(--navbar-h);}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(600px 300px at 90% -10%, var(--sage-soft), transparent),
+      radial-gradient(500px 260px at -10% 110%, #FDF0CC, transparent),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-top:var(--navbar-h);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  a{color:inherit; text-decoration:none;}
+  a:focus-visible, button:focus-visible{outline:3px solid var(--sage); outline-offset:2px;}
+
+  /* ---------- Nav bar ---------- */
+  .navbar{
+    background:var(--surface); border-bottom:1px solid var(--line);
+    position:fixed; top:0; left:0; right:0; width:100%; height:var(--navbar-h); z-index:30;
+  }
+  .nav-inner{
+    max-width:960px; margin:0 auto; padding:0 20px;
+    height:var(--navbar-h); display:flex; align-items:center; gap:20px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:14px; font-weight:600; color:var(--teal-dark); flex:none; }
+  .brand-mark{
+    width:26px;height:26px;border-radius:8px;
+    background:linear-gradient(135deg,var(--teal),var(--sage));
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand-mark svg{width:14px;height:14px;stroke:#fff;}
+
+  .nav-links{ display:flex; align-items:center; gap:4px; flex:1; overflow-x:auto; scrollbar-width:none; }
+  .nav-links::-webkit-scrollbar{ display:none; }
+  .nav-links a{
+    display:flex; align-items:center; gap:7px;
+    font-size:13.5px; font-weight:600; color:var(--ink-soft);
+    padding:8px 13px; border-radius:999px; white-space:nowrap;
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav-links a svg{ width:14px;height:14px; stroke:currentColor; flex:none; }
+  .nav-links a:hover, .nav-links a.active{ background:var(--sage-soft); color:var(--teal-dark); }
+
+  .nav-toggle{
+    display:none; flex:none;
+    width:36px;height:36px; border-radius:10px; border:1px solid var(--line);
+    background:#fff; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .nav-toggle svg{ width:17px;height:17px; stroke:var(--ink); }
+
+  .nav-drawer{ display:none; }
+  @media (max-width:720px){
+    .nav-links{ display:none; }
+    .nav-toggle{ display:flex; }
+    .nav-drawer{
+      display:none; flex-direction:column;
+      max-width:960px; margin:0 auto; padding:0 20px 14px; gap:2px;
+      position:fixed; top:64px; left:0; right:0;
+      background:var(--surface); border-bottom:1px solid var(--line);
+      max-height:calc(100vh - 64px); overflow-y:auto;
+    }
+    .nav-drawer.open{ display:flex; }
+    .nav-drawer a{
+      display:flex; align-items:center; gap:10px;
+      font-size:14.5px; font-weight:600; color:var(--ink);
+      padding:11px 12px; border-radius:11px;
+    }
+    .nav-drawer a svg{ width:16px;height:16px; stroke:var(--teal); flex:none; }
+    .nav-drawer a:hover, .nav-drawer a.active{ background:var(--sage-soft); }
+  }
+
+  .wrap{ max-width:760px; margin:0 auto; padding:28px 20px 60px; }
+
+  .panel{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 24px 48px -28px rgba(75,42,148,.28);
+    display:flex;
+  }
+  @media (max-width:640px){ .panel{ flex-direction:column; } }
+
+  /* ---------- Sidebar ---------- */
+  .profile-sidebar{
+    width:240px; flex:none;
+    background:linear-gradient(160deg,var(--teal),var(--teal-dark));
+    padding:36px 26px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .profile-sidebar::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(160px 160px at 100% 0%, rgba(255,255,255,.14), transparent),
+      radial-gradient(180px 180px at 0% 100%, rgba(255,255,255,.10), transparent);
+    pointer-events:none;
+  }
+  @media (max-width:640px){
+    .profile-sidebar{ width:100%; padding:30px 24px 26px; flex-direction:row; text-align:left; gap:16px; align-items:center; }
+  }
+
+  .profile-photo{
+    width:104px; height:104px; border-radius:50%;
+    object-fit:cover; border:4px solid rgba(255,255,255,.9);
+    background:rgba(255,255,255,.15); flex:none;
+    box-shadow:0 14px 26px -12px rgba(0,0,0,.35);
+    position:relative; z-index:1;
+  }
+  .profile-photo-fallback{
+    width:104px; height:104px; border-radius:50%;
+    border:4px solid rgba(255,255,255,.9);
+    background:rgba(255,255,255,.15); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:36px;
+    flex:none; box-shadow:0 14px 26px -12px rgba(0,0,0,.35);
+    position:relative; z-index:1;
+  }
+  @media (max-width:640px){
+    .profile-photo, .profile-photo-fallback{ width:76px; height:76px; font-size:26px; }
+  }
+
+  .profile-name-block{
+    margin-top:18px; position:relative; z-index:1;
+  }
+  @media (max-width:640px){ .profile-name-block{ margin-top:0; } }
+  .profile-name-block h1{
+    font-family:'Fraunces',serif; font-weight:600; font-size:19px;
+    line-height:1.25;
+    margin:0 0 10px; color:#fff;
+  }
+  .role-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; color:#fff;
+    background:rgba(255,255,255,.18); padding:4px 12px; border-radius:999px;
+    border:1px solid rgba(255,255,255,.28);
+  }
+
+  /* ---------- Details ---------- */
+  .profile-details{ flex:1; min-width:0; padding:36px 32px; }
+  @media (max-width:640px){ .profile-details{ padding:24px 20px 26px; } }
+
+  .details-heading{
+    font-size:11.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-soft); margin:0 0 18px;
+  }
+
+  .info-list{
+    display:flex; flex-direction:column;
+  }
+  .info-item{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:15px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .info-item:last-child{ border-bottom:none; padding-bottom:0; }
+  .info-item:first-child{ padding-top:0; }
+  .info-icon{
+    width:36px; height:36px; border-radius:10px; flex:none;
+    background:var(--sage-soft); display:flex; align-items:center; justify-content:center;
+  }
+  .info-icon svg{ width:17px; height:17px; stroke:var(--teal); }
+  .info-text{ min-width:0; }
+  .info-label{
+    font-size:11.5px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:3px;
+  }
+  .info-value{
+    font-size:14.5px; font-weight:600; color:var(--ink);
+    overflow-wrap:break-word;
+  }
+  .info-value.muted{ color:var(--ink-soft); font-weight:500; font-style:italic; }
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:600; padding:4px 10px; border-radius:999px;
+  }
+  .badge.male{ background:#E2EAFB; color:#3B6FD6; }
+  .badge.female{ background:#FBE1EE; color:#D6398C; }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/></svg>
+        </span>
+        Calmora
+      </div>
+
+      <div class="nav-links">
+        <a href="/myapp/hrhome_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+        <a href="/myapp/viewteamleader_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+          Team leaders
+        </a>
+        <a href="/myapp/viewteammember_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Team members
+        </a>
+        <a href="/myapp/hrviewwork_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+          Work
+        </a>
+      </div>
+
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <div class="nav-drawer" id="navDrawer">
+      <a href="/myapp/hrhome_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        Dashboard
+      </a>
+      <a href="/myapp/viewteamleader_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+        Team leaders
+      </a>
+      <a href="/myapp/viewteammember_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team members
+      </a>
+      <a href="/myapp/hrviewwork_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+        Work
+      </a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="panel">
+      <div class="profile-sidebar">
+        {% if data.photo %}
+          <img class="profile-photo" src="{{ data.photo.url }}" alt="{{ data.name }}">
+        {% else %}
+          <span class="profile-photo-fallback">{{ data.name|slice:":1"|default:"?" }}</span>
+        {% endif %}
+        <div class="profile-name-block">
+          <h1>{{ data.name|default:"Unnamed" }}</h1>
+          <span class="role-pill">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="8" r="5"/></svg>
+            HR
+          </span>
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <p class="details-heading">Profile details</p>
+        <div class="info-list">
+        <div class="info-item">
+          <span class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+          </span>
+          <div class="info-text">
+            <div class="info-label">Email</div>
+            {% if data.email %}
+              <div class="info-value">{{ data.email }}</div>
+            {% else %}
+              <div class="info-value muted">Not provided</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <div class="info-text">
+            <div class="info-label">Phone</div>
+            {% if data.phone %}
+              <div class="info-value">{{ data.phone }}</div>
+            {% else %}
+              <div class="info-value muted">Not provided</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+          </span>
+          <div class="info-text">
+            <div class="info-label">Gender</div>
+            {% if data.gender %}
+              <div class="info-value"><span class="badge {{ data.gender|lower }}">{{ data.gender }}</span></div>
+            {% else %}
+              <div class="info-value muted">Not provided</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          </span>
+          <div class="info-text">
+            <div class="info-label">Date of birth</div>
+            {% if data.dob %}
+              <div class="info-value">{{ data.dob }}</div>
+            {% else %}
+              <div class="info-value muted">Not provided</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </span>
+          <div class="info-text">
+            <div class="info-label">Qualification</div>
+            {% if data.qualification %}
+              <div class="info-value">{{ data.qualification }}</div>
+            {% else %}
+              <div class="info-value muted">Not provided</div>
+            {% endif %}
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const navToggle = document.getElementById('navToggle');
+  const navDrawer = document.getElementById('navDrawer');
+  if(navToggle && navDrawer){
+    navToggle.addEventListener('click', function(){
+      const open = navDrawer.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

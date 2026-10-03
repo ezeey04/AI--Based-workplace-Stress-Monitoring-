@@ -1,0 +1,1298 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Camora - Login</title>
+
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background: #faf7fc;
+
+            font-family: "DM Sans", sans-serif;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        /* soft ambient glow behind the card */
+
+        body::before,
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            border-radius: 50%;
+
+            z-index: 0;
+        }
+
+
+        body::before {
+
+            width: 520px;
+
+            height: 520px;
+
+            background: radial-gradient(circle, rgba(116,68,208,0.12), transparent 70%);
+
+            top: -180px;
+
+            left: -160px;
+        }
+
+
+        body::after {
+
+            width: 460px;
+
+            height: 460px;
+
+            background: radial-gradient(circle, rgba(224,69,123,0.09), transparent 70%);
+
+            bottom: -160px;
+
+            right: -140px;
+        }
+
+
+        /* MAIN CONTAINER */
+
+        .login-container {
+
+            width: 1080px;
+
+            min-height: 640px;
+
+            display: flex;
+
+            background: white;
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            border: 1px solid #e5dcf0;
+
+            box-shadow: 0 30px 70px -20px rgba(76, 42, 145, 0.28);
+
+            position: relative;
+
+            z-index: 1;
+        }
+
+
+        /* =========================
+           LEFT SIDE
+        ========================= */
+
+        .left-section {
+
+            width: 50%;
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 48px 48px 0;
+
+            color: white;
+
+            background: linear-gradient(150deg, #7c4ad8 0%, #6538bd 50%, #4b2992 100%);
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        .left-section::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+
+            height: 280px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.06);
+
+            top: -100px;
+
+            right: -90px;
+
+            z-index: 0;
+        }
+
+
+        .left-section::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 220px;
+
+            height: 220px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.04);
+
+            bottom: 30px;
+
+            left: -100px;
+
+            z-index: 0;
+        }
+
+
+        /* BRAND */
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            position: relative;
+
+            z-index: 5;
+        }
+
+
+        .brand-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            border-radius: 11px;
+
+            background: rgba(255,255,255,0.16);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.22);
+
+            flex: none;
+        }
+
+
+        .brand-icon svg {
+
+            width: 19px;
+
+            height: 19px;
+
+            stroke: #fff;
+
+            fill: none;
+
+            stroke-width: 2;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+        }
+
+
+        .brand-name {
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.2px;
+        }
+
+
+        /* LEFT TEXT */
+
+        .left-content {
+
+            position: relative;
+
+            z-index: 5;
+
+            margin-top: 38px;
+        }
+
+
+        .left-content h1 {
+
+            font-family: "Playfair Display", serif;
+
+            font-weight: 600;
+
+            font-size: 30px;
+
+            line-height: 1.28;
+
+            max-width: 420px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .left-content p {
+
+            font-size: 14.5px;
+
+            line-height: 1.65;
+
+            color: #eae1fb;
+
+            max-width: 380px;
+        }
+
+
+        /* =========================
+           STRESS ILLUSTRATION
+        ========================= */
+
+        .illustration-wrap {
+
+            position: relative;
+
+            z-index: 2;
+
+            margin-top: auto;
+
+            width: 100%;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: flex-end;
+
+            padding-bottom: 0;
+        }
+
+
+        .illustration-wrap::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 210px;
+
+            height: 36px;
+
+            border-radius: 50%;
+
+            background: radial-gradient(closest-side, rgba(15,6,40,0.38), transparent 75%);
+
+            bottom: 18px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            z-index: 0;
+
+            filter: blur(3px);
+        }
+
+
+        .illustration-3d {
+
+            position: relative;
+
+            z-index: 1;
+
+            width: 80%;
+
+            max-width: 380px;
+
+            transform: rotate(-2.5deg);
+
+            transition: transform 0.4s ease;
+
+            animation: illustrationFloat 6s ease-in-out infinite;
+
+            will-change: transform;
+        }
+
+
+        .illustration-3d:hover {
+
+            transform: rotate(-1deg) translateY(-6px) scale(1.02);
+        }
+
+
+        .stress-illustration {
+
+            position: relative;
+
+            display: block;
+
+            width: 100%;
+
+            -webkit-mask-image: radial-gradient(ellipse 66% 64% at 50% 46%, black 60%, transparent 100%);
+
+            mask-image: radial-gradient(ellipse 66% 64% at 50% 46%, black 60%, transparent 100%);
+
+            filter: drop-shadow(0 20px 26px rgba(15, 6, 40, 0.35));
+        }
+
+
+        @keyframes illustrationFloat {
+
+            0%, 100% {
+
+                transform: rotate(-2.5deg) translateY(0px);
+            }
+
+            50% {
+
+                transform: rotate(-2.5deg) translateY(-9px);
+            }
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .illustration-3d {
+
+                animation: none;
+            }
+        }
+
+
+        /* =========================
+           RIGHT SIDE
+        ========================= */
+
+        .right-section {
+
+            width: 50%;
+
+            padding: 52px 56px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+
+        /* BADGE */
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            width: fit-content;
+
+            padding: 6px 13px;
+
+            border-radius: 30px;
+
+            background: #f1e9ff;
+
+            color: #7040c9;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.6px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .badge::before {
+
+            content: "";
+
+            width: 6px;
+
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #7040c9;
+
+            display: inline-block;
+        }
+
+
+        /* TITLE */
+
+        .right-section h2 {
+
+            font-family: "Playfair Display", serif;
+
+            color: #4d2b91;
+
+            font-size: 32px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+
+        .subtitle {
+
+            color: #76698d;
+
+            font-size: 14.5px;
+
+            margin-bottom: 30px;
+        }
+
+
+        /* FORM */
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        label {
+
+            display: block;
+
+            color: #352746;
+
+            font-size: 13.5px;
+
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* INPUT */
+
+        .input-box {
+
+            height: 50px;
+
+            border: 1.5px solid #e6dcf3;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 0 15px;
+
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+
+            background: #fbf9fd;
+        }
+
+
+        .input-box:hover {
+
+            border-color: #c9b6e8;
+        }
+
+
+        .input-box:focus-within {
+
+            border-color: #7040c9;
+
+            background: white;
+
+            box-shadow: 0 0 0 4px rgba(112,64,201,0.10);
+        }
+
+
+        .input-icon {
+
+            width: 18px;
+
+            height: 18px;
+
+            margin-right: 11px;
+
+            color: #8a7aa3;
+
+            flex: none;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: color 0.15s ease;
+        }
+
+
+        .input-icon svg {
+
+            width: 100%;
+
+            height: 100%;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.8;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+        }
+
+
+        .input-box:focus-within .input-icon {
+
+            color: #7040c9;
+        }
+
+
+        .input-box input {
+
+            width: 100%;
+
+            height: 100%;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            font-family: inherit;
+
+            font-size: 14.5px;
+
+            color: #352746;
+        }
+
+
+        .input-box input::placeholder {
+
+            color: #a8a0b8;
+        }
+
+
+        /* EYE */
+
+        .eye {
+
+            cursor: pointer;
+
+            color: #8a7aa3;
+
+            width: 18px;
+
+            height: 18px;
+
+            margin-left: 10px;
+
+            user-select: none;
+
+            flex: none;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: color 0.15s ease;
+        }
+
+
+        .eye svg {
+
+            width: 100%;
+
+            height: 100%;
+
+            stroke: currentColor;
+
+            fill: none;
+
+            stroke-width: 1.8;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+        }
+
+
+        .eye:hover {
+
+            color: #7040c9;
+        }
+
+
+        /* REMEMBER + FORGOT ROW */
+
+        .form-meta-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 26px;
+        }
+
+
+        .remember {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 13.5px;
+
+            color: #5c527a;
+
+            cursor: pointer;
+
+            user-select: none;
+        }
+
+
+        .remember input {
+
+            appearance: none;
+
+            -webkit-appearance: none;
+
+            width: 17px;
+
+            height: 17px;
+
+            border-radius: 5px;
+
+            border: 1.5px solid #d3c5ec;
+
+            cursor: pointer;
+
+            display: grid;
+
+            place-content: center;
+
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+
+        .remember input::before {
+
+            content: "";
+
+            width: 9px;
+
+            height: 9px;
+
+            transform: scale(0);
+
+            transition: transform 0.12s ease;
+
+            box-shadow: inset 1em 1em white;
+
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+
+        .remember input:checked {
+
+            background: #7040c9;
+
+            border-color: #7040c9;
+        }
+
+
+        .remember input:checked::before {
+
+            transform: scale(1);
+        }
+
+
+        .forgot a {
+
+            color: #7040c9;
+
+            text-decoration: none;
+
+            font-size: 13.5px;
+
+            font-weight: 700;
+        }
+
+
+        .forgot a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* LOGIN BUTTON */
+
+        .login-button {
+
+            width: 100%;
+
+            height: 52px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            background: linear-gradient(95deg, #7c4ad8, #4d2997);
+
+            color: white;
+
+            font-family: inherit;
+
+            font-size: 15.5px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow: 0 14px 28px -10px rgba(91,48,170,0.5);
+
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+        }
+
+
+        .login-button svg {
+
+            width: 16px;
+
+            height: 16px;
+
+            stroke: #fff;
+
+            fill: none;
+
+            stroke-width: 2;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+            transition: transform 0.2s ease;
+        }
+
+
+        .login-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 18px 32px -10px rgba(91,48,170,0.6);
+        }
+
+
+        .login-button:hover svg {
+
+            transform: translateX(3px);
+        }
+
+
+        .login-button:active {
+
+            transform: translateY(0);
+        }
+
+
+        /* SECURITY FOOTER */
+
+        .security-note {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            margin-top: 22px;
+
+            color: #9a8fb0;
+
+            font-size: 12.5px;
+        }
+
+
+        .security-note svg {
+
+            width: 13px;
+
+            height: 13px;
+
+            stroke: #9a8fb0;
+
+            fill: none;
+
+            stroke-width: 2;
+
+            stroke-linecap: round;
+
+            stroke-linejoin: round;
+
+            flex: none;
+        }
+
+
+        /* HELP */
+
+        .help-text {
+
+            text-align: center;
+
+            margin-top: 10px;
+
+            color: #8b7fa0;
+
+            font-size: 13.5px;
+        }
+
+
+        .help-text a {
+
+            color: #7040c9;
+
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+
+        .help-text a:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .login-container {
+
+                width: 100%;
+
+                min-height: auto;
+
+                flex-direction: column;
+
+                max-width: 600px;
+            }
+
+
+            .left-section {
+
+                width: 100%;
+
+                padding: 38px 38px 0;
+
+                min-height: 400px;
+            }
+
+
+            .right-section {
+
+                width: 100%;
+
+                padding: 42px 38px;
+            }
+
+
+            .left-content {
+
+                margin-top: 24px;
+            }
+
+
+            .illustration-3d {
+
+                max-width: 320px;
+            }
+        }
+
+
+        @media (max-width: 550px) {
+
+            body {
+
+                padding: 0;
+            }
+
+
+            .login-container {
+
+                min-height: 100vh;
+
+                border-radius: 0;
+
+                border: none;
+            }
+
+
+            .left-section {
+
+                padding: 28px 24px 0;
+
+                min-height: 340px;
+            }
+
+
+            .right-section {
+
+                padding: 36px 24px;
+            }
+
+
+            .left-content {
+
+                margin-top: 18px;
+            }
+
+
+            .left-content h1 {
+
+                font-size: 24px;
+            }
+
+
+            .left-content p {
+
+                font-size: 13.5px;
+            }
+
+
+            .right-section h2 {
+
+                font-size: 27px;
+            }
+
+
+            .illustration-3d {
+
+                max-width: 260px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-container">
+
+
+    <!-- =========================
+         LEFT SECTION
+    ========================= -->
+
+    <div class="left-section">
+
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <span class="brand-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/></svg>
+            </span>
+
+            <div class="brand-name">
+                Calmora
+            </div>
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="left-content">
+
+            <h1>
+                Understand and manage
+                workplace stress, together.
+            </h1>
+
+
+            <p>
+                One console for admins, HR, and team leaders
+                to track wellbeing, assign work, and catch
+                burnout risk early.
+            </p>
+
+        </div>
+
+
+        <!-- STRESS ILLUSTRATION -->
+
+        <div class="illustration-wrap">
+
+            <div class="illustration-3d">
+
+                <img
+                    src="/static/stress-image.png"
+                    class="stress-illustration"
+                    alt="Illustration of a stressed employee at a laptop"
+                >
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         RIGHT SECTION
+    ========================= -->
+
+    <div class="right-section">
+
+
+        <div class="badge">
+            SECURE SIGN IN
+        </div>
+
+
+        <h2>
+            Welcome back
+        </h2>
+
+
+        <p class="subtitle">
+            Log in with your registered email to continue.
+        </p>
+
+
+        <!-- LOGIN FORM -->
+
+        <form
+            method="POST"
+            action="/myapp/login_post/"
+        >
+
+            {% csrf_token %}
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>
+                    </span>
+
+
+                    <input
+                        type="username"
+                        name="username"
+                        placeholder="you@company.com"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PASSWORD -->
+
+            <div class="form-group">
+
+                <label>
+                    Password
+                </label>
+
+
+                <div class="input-box">
+
+                    <span class="input-icon">
+                        <svg viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.2" r="1.4" fill="currentColor" stroke="none"/></svg>
+                    </span>
+
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+
+                    <span
+                        class="eye"
+                        id="eyeToggle"
+                        onclick="showPassword()"
+                    >
+                        <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REMEMBER + FORGOT -->
+
+            <div class="form-meta-row">
+
+
+                <span class="forgot">
+                    <a href="/myapp/forget_get/">Forgot password?</a>
+                </span>
+
+            </div>
+
+
+
+            <!-- LOGIN -->
+
+            <button
+                type="submit"
+                class="login-button"
+            >
+                Log in
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+
+
+        </form>
+
+
+        <!-- SECURITY NOTE -->
+
+        <div class="security-note">
+            <svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
+            Your data is encrypted and access is role-based
+        </div>
+
+
+
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+function showPassword() {
+
+    var field = document.getElementById("password");
+
+    var icon = document.getElementById("eyeIcon");
+
+    var isHidden = field.type === "password";
+
+    field.type = isHidden ? "text" : "password";
+
+    icon.innerHTML = isHidden
+        ? '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+        : '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>';
+
+}
+
+</script>
+
+
+</body>
+
+</html>

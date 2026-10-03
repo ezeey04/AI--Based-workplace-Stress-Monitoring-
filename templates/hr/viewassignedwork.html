@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assigned Work · Calmora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6FB;
+    --surface:#FFFFFF;
+    --ink:#2B2140;
+    --ink-soft:#6B5F82;
+    --teal:#6C3FC9;
+    --teal-dark:#4B2A94;
+    --sage:#B79CE8;
+    --sage-soft:#F0E9FB;
+    --coral:#E0457B;
+    --coral-soft:#FCE7EF;
+    --line:#E7DFF2;
+    --ok:#1FB6A6;
+    --ok-soft:#DBF6F1;
+    --amber:#F2B705;
+    --amber-soft:#FDF0CC;
+    --radius:16px;
+    --navbar-h:64px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:var(--navbar-h);}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-top:var(--navbar-h);
+  }
+  a{text-decoration:none; color:inherit;}
+  a:focus-visible, button:focus-visible{outline:3px solid var(--sage); outline-offset:2px;}
+
+  /* ---------- Nav bar ---------- */
+  .navbar{
+    background:var(--surface); border-bottom:1px solid var(--line);
+    position:fixed; top:0; left:0; right:0; width:100%; height:var(--navbar-h); z-index:30;
+  }
+  .nav-inner{
+    max-width:1100px; margin:0 auto; padding:0 24px;
+    height:var(--navbar-h); display:flex; align-items:center; gap:22px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; color:var(--teal-dark); flex:none; }
+  .brand-mark{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--teal),var(--sage));
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand-mark svg{width:16px;height:16px;stroke:#fff;}
+
+  .nav-links{ display:flex; align-items:center; gap:4px; flex:1; overflow-x:auto; scrollbar-width:none; }
+  .nav-links::-webkit-scrollbar{ display:none; }
+  .nav-links a{
+    display:flex; align-items:center; gap:7px;
+    font-size:13.5px; font-weight:600; color:var(--ink-soft);
+    padding:8px 13px; border-radius:999px; white-space:nowrap;
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav-links a svg{ width:14px;height:14px; stroke:currentColor; flex:none; }
+  .nav-links a:hover, .nav-links a.active{ background:var(--sage-soft); color:var(--teal-dark); }
+
+  .nav-toggle{
+    display:none; flex:none;
+    width:38px;height:38px; border-radius:10px; border:1px solid var(--line);
+    background:#fff; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .nav-toggle svg{ width:18px;height:18px; stroke:var(--ink); }
+  .nav-drawer{ display:none; }
+  @media (max-width:820px){
+    .nav-links{ display:none; }
+    .nav-toggle{ display:flex; }
+    .nav-drawer{
+      display:none; flex-direction:column;
+      max-width:1100px; margin:0 auto; padding:0 24px 14px; gap:2px;
+      position:fixed; top:var(--navbar-h); left:0; right:0;
+      background:var(--surface); border-bottom:1px solid var(--line);
+      max-height:calc(100vh - var(--navbar-h)); overflow-y:auto;
+    }
+    .nav-drawer.open{ display:flex; }
+    .nav-drawer a{
+      display:flex; align-items:center; gap:10px;
+      font-size:14.5px; font-weight:600; color:var(--ink);
+      padding:11px 12px; border-radius:11px;
+    }
+    .nav-drawer a svg{ width:16px;height:16px; stroke:var(--teal); flex:none; }
+    .nav-drawer a:hover, .nav-drawer a.active{ background:var(--sage-soft); }
+  }
+
+  /* ---------- Page header ---------- */
+  .page-head{
+    max-width:1100px; margin:0 auto; padding:34px 24px 22px;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .page-head .eyebrow{
+    display:inline-block; font-size:12px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--teal); background:var(--sage-soft);
+    padding:4px 10px; border-radius:999px; margin-bottom:12px;
+  }
+  .page-head h1{
+    font-family:'Fraunces',serif; font-weight:600; font-size:28px;
+    margin:0 0 6px; color:var(--teal-dark);
+  }
+  .page-head p{ margin:0; font-size:14px; color:var(--ink-soft); }
+  .count-pill{
+    font-size:13px; font-weight:600; color:var(--teal-dark);
+    background:var(--sage-soft); border:1px solid var(--line);
+    padding:8px 16px; border-radius:999px; white-space:nowrap;
+  }
+
+  /* ---------- Search + filters ---------- */
+  .search-bar{
+    max-width:1100px; margin:0 auto; padding:0 24px 18px;
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  .search-box{ position:relative; max-width:360px; flex:1 1 260px; }
+  .search-box svg{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; stroke:var(--ink-soft); pointer-events:none;
+  }
+  .search-box input{
+    width:100%; font-family:inherit; font-size:14px; color:var(--ink);
+    background:#fff; border:1.5px solid var(--line); border-radius:12px;
+    padding:11px 14px 11px 40px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .search-box input:hover{ border-color:var(--sage); }
+  .search-box input:focus{
+    outline:none; border-color:var(--teal); box-shadow:0 0 0 4px var(--sage-soft);
+  }
+  .search-box .clear-btn{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    width:22px; height:22px; border-radius:50%; border:none;
+    background:var(--sage-soft); display:none; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .search-box .clear-btn svg{ position:static; transform:none; width:12px; height:12px; stroke:var(--teal-dark); }
+  .search-box.has-value .clear-btn{ display:flex; }
+
+  .filter-select select{
+    appearance:none; font-family:inherit; font-size:13.5px; font-weight:600; color:var(--ink);
+    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5F82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right 10px center;
+    background-size:15px;
+    border:1.5px solid var(--line); border-radius:12px;
+    padding:10px 32px 10px 14px; cursor:pointer;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .filter-select select:hover{ border-color:var(--sage); }
+  .filter-select select:focus{
+    outline:none; border-color:var(--teal); box-shadow:0 0 0 4px var(--sage-soft);
+  }
+
+  main{ max-width:1100px; margin:0 auto; padding:0 24px 64px; }
+
+  /* ---------- Table ---------- */
+  .table-card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:20px; overflow:hidden;
+    box-shadow:0 20px 44px -30px rgba(75,42,148,.3);
+  }
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    text-align:left; font-size:12px; font-weight:600; letter-spacing:.03em;
+    text-transform:uppercase; color:var(--ink-soft);
+    background:var(--sage-soft); padding:14px 16px;
+    border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{
+    padding:14px 16px; font-size:14px; color:var(--ink);
+    border-bottom:1px solid var(--line); vertical-align:middle;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr{ transition:background .15s ease; }
+  tbody tr:hover{ background:#FBF8FE; }
+  .no-cell{ color:var(--ink-soft); font-weight:600; }
+  .title-cell{ font-weight:600; }
+
+  .leader-cell{ display:flex; align-items:center; gap:10px; }
+  .leader-avatar{
+    width:30px; height:30px; border-radius:50%;
+    background:var(--sage-soft); color:var(--teal-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600; font-size:12.5px; flex:none;
+  }
+
+  .deadline-cell{ white-space:nowrap; }
+  .deadline-cell.overdue{ color:var(--coral); font-weight:600; }
+  .overdue-tag{
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:11px; font-weight:700; color:var(--coral);
+    background:var(--coral-soft); padding:2px 7px; border-radius:999px; margin-top:4px;
+  }
+
+  .badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:600; padding:5px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .badge.completed, .badge.done{ background:var(--ok-soft); color:var(--ok); }
+  .badge.pending{ background:var(--amber-soft); color:#8a6e00; }
+  .badge.in-progress, .badge.inprogress{ background:#E2EAFB; color:#3B6FD6; }
+  .badge.default{ background:var(--sage-soft); color:var(--teal-dark); }
+
+  .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn-icon{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13px; font-weight:600;
+    padding:7px 12px; border-radius:9px; border:1px solid var(--line);
+    background:#fff; transition:border-color .15s ease, background .15s ease, color .15s ease;
+  }
+  .btn-icon svg{ width:13px;height:13px; stroke:currentColor; }
+  .btn-view{ color:var(--teal-dark); }
+  .btn-view:hover{ border-color:var(--teal); background:var(--sage-soft); }
+  .btn-delete{ color:var(--coral); }
+  .btn-delete:hover{ border-color:var(--coral); background:var(--coral-soft); }
+
+  .empty-state, .no-results{
+    padding:60px 24px; text-align:center; color:var(--ink-soft);
+  }
+  .no-results{ display:none; }
+  .empty-state svg, .no-results svg{ width:40px; height:40px; stroke:var(--sage); margin-bottom:14px; }
+  .empty-state p, .no-results p{ margin:0; font-size:14.5px; }
+
+  /* ---------- Responsive: stacked cards ---------- */
+  @media (max-width:800px){
+    thead{ display:none; }
+    table, tbody, tr, td{ display:block; width:100%; }
+    .table-card{ background:transparent; border:none; box-shadow:none; }
+    tbody tr{
+      background:var(--surface); border:1px solid var(--line);
+      border-radius:16px; margin-bottom:14px; padding:6px 4px;
+      box-shadow:0 14px 30px -24px rgba(75,42,148,.3);
+    }
+    tbody tr:hover{ background:var(--surface); }
+    tbody td{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:10px 14px; border-bottom:1px dashed var(--line);
+      text-align:right;
+    }
+    tbody td:last-child{ border-bottom:none; }
+    tbody td::before{
+      content:attr(data-label);
+      font-size:11.5px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
+      color:var(--ink-soft); text-align:left; flex:none;
+    }
+    .no-cell{ display:none; }
+    .leader-cell{ flex-direction:row-reverse; }
+    .actions{ justify-content:flex-end; width:100%; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    tbody tr, .btn-icon, .nav-links a{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/></svg>
+        </span>
+        Calmora
+      </div>
+
+      <div class="nav-links">
+        <a href="/myapp/hrhome_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+        <a href="/myapp/viewteamleader_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+          Team leaders
+        </a>
+        <a href="/myapp/viewteammember_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Team members
+        </a>
+        <a href="/myapp/hrviewwork_get/">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+          Work
+        </a>
+        <a href="/myapp/viewassignedwork_get/" class="active">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Assigned work
+        </a>
+      </div>
+
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+
+    <div class="nav-drawer" id="navDrawer">
+      <a href="/myapp/hrhome_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        Dashboard
+      </a>
+      <a href="/myapp/viewteamleader_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/><path d="M9 4.5l3 3 3-3"/></svg>
+        Team leaders
+      </a>
+      <a href="/myapp/viewteammember_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team members
+      </a>
+      <a href="/myapp/hrviewwork_get/">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-6 3 4 5-8"/></svg>
+        Work
+      </a>
+      <a href="/myapp/viewassignedwork_get/" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Assigned work
+      </a>
+    </div>
+  </nav>
+
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">HR · Assigned work</span>
+      <h1>Assigned work</h1>
+      <p>Work items currently assigned out to team leaders.</p>
+    </div>
+    <span class="count-pill">{{ data|length }} assignment{{ data|length|pluralize }}</span>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-box" id="searchBox">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="assignedSearch" placeholder="Search by work title or team leader..." autocomplete="off">
+      <button type="button" class="clear-btn" id="clearSearch" aria-label="Clear search">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="filter-select">
+      <select id="statusFilter">
+        <option value="">All statuses</option>
+        <option value="pending">Pending</option>
+        <option value="in progress">In progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+    <div class="filter-select">
+      <select id="leaderFilter">
+        <option value="">All team leaders</option>
+      </select>
+    </div>
+  </div>
+
+  <main>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Work title</th>
+            <th>Date</th>
+            <th>Deadline</th>
+            <th>Team leader</th>
+            <th>Status</th>
+            <th>Action</th>
+            <th>View members</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+          <tr>
+            <td class="no-cell" data-label="No">{{ forloop.counter }}</td>
+            <td class="title-cell" data-label="Work title">{{ i.WORK.worktitle }}</td>
+            <td data-label="Date">{{ i.date }}</td>
+            <td class="deadline-cell" data-label="Deadline" data-deadline="{{ i.WORK.deadline|date:'Y-m-d' }}">{{ i.WORK.deadline }}</td>
+            <td data-label="Team leader">
+              <div class="leader-cell">
+                <span class="leader-avatar">{{ i.TEAM_LEADER.name|slice:":1" }}</span>
+                <span>{{ i.TEAM_LEADER.name }}</span>
+              </div>
+            </td>
+            <td data-label="Status">
+              <span class="badge default status-badge" data-status="{{ i.WORK.status|lower }}">{{ i.WORK.status }}</span>
+            </td>
+            <td data-label="Action">
+              <div class="actions">
+                <a class="btn-icon btn-delete" href="/myapp/deleteassignedwork_get/{{ i.id }}" onclick="return confirm('Unassign this work from {{ i.TEAM_LEADER.name }}?');">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                  Delete
+                </a>
+              </div>
+            </td>
+            <td data-label="View members">
+              <a class="btn-icon btn-view" href="/myapp/viewteammemberswork/{{ i.id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                View members
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" style="border-bottom:none;">
+              <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <p>No work has been assigned yet.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="no-results" id="noResults">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <p>No assignments match your search.</p>
+      </div>
+    </div>
+  </main>
+
+<script>
+(function(){
+  const navToggle = document.getElementById('navToggle');
+  const navDrawer = document.getElementById('navDrawer');
+  if(navToggle && navDrawer){
+    navToggle.addEventListener('click', function(){
+      const open = navDrawer.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+
+  // Color-code status badges based on their text
+  document.querySelectorAll('.status-badge').forEach(function(badge){
+    const status = (badge.getAttribute('data-status') || '').replace(/\s+/g, '-');
+    if(status) badge.classList.add(status);
+  });
+
+  // Flag overdue deadlines (deadline in the past, not completed)
+  const todayStr = new Date().toISOString().slice(0, 10);
+  document.querySelectorAll('.deadline-cell').forEach(function(cell){
+    const d = cell.getAttribute('data-deadline');
+    const row = cell.closest('tr');
+    const statusBadge = row ? row.querySelector('.status-badge') : null;
+    const status = statusBadge ? (statusBadge.getAttribute('data-status') || '') : '';
+    if(d && d < todayStr && !status.includes('complet') && !status.includes('done')){
+      cell.classList.add('overdue');
+      const tag = document.createElement('span');
+      tag.className = 'overdue-tag';
+      tag.textContent = 'Overdue';
+      cell.appendChild(document.createElement('br'));
+      cell.appendChild(tag);
+    }
+  });
+
+  // Search / filter
+  const input = document.getElementById('assignedSearch');
+  const searchBox = document.getElementById('searchBox');
+  const clearBtn = document.getElementById('clearSearch');
+  const statusFilter = document.getElementById('statusFilter');
+  const leaderFilter = document.getElementById('leaderFilter');
+  const table = document.querySelector('.table-card table');
+  const noResults = document.getElementById('noResults');
+
+  if(input && table){
+    const rows = Array.from(table.querySelectorAll('tbody tr')).filter(
+      tr => !tr.querySelector('.empty-state')
+    );
+
+    // Populate team leader filter from the actual data, deduped
+    if(leaderFilter){
+      const leaders = new Set();
+      rows.forEach(tr => {
+        const name = (tr.querySelector('.leader-cell span:last-child')?.textContent || '').trim();
+        if(name) leaders.add(name);
+      });
+      Array.from(leaders).sort().forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name.toLowerCase();
+        opt.textContent = name;
+        leaderFilter.appendChild(opt);
+      });
+    }
+
+    function applyFilter(){
+      const q = input.value.trim().toLowerCase();
+      const statusVal = statusFilter ? statusFilter.value : '';
+      const leaderVal = leaderFilter ? leaderFilter.value : '';
+      searchBox.classList.toggle('has-value', q.length > 0);
+
+      let visibleCount = 0;
+      rows.forEach(tr => {
+        const title = (tr.querySelector('[data-label="Work title"]')?.textContent || '').toLowerCase();
+        const leaderName = (tr.querySelector('.leader-cell span:last-child')?.textContent || '').toLowerCase();
+        const status = (tr.querySelector('.status-badge')?.getAttribute('data-status') || '');
+
+        const matchesSearch = !q || title.includes(q) || leaderName.includes(q);
+        const matchesStatus = !statusVal || status === statusVal;
+        const matchesLeader = !leaderVal || leaderName === leaderVal;
+        const match = matchesSearch && matchesStatus && matchesLeader;
+
+        tr.style.display = match ? '' : 'none';
+        if(match) visibleCount++;
+      });
+
+      if(noResults){
+        noResults.style.display = (rows.length > 0 && visibleCount === 0) ? 'block' : 'none';
+      }
+      table.style.display = (rows.length > 0 && visibleCount === 0) ? 'none' : '';
+    }
+
+    input.addEventListener('input', applyFilter);
+    clearBtn.addEventListener('click', function(){
+      input.value = '';
+      applyFilter();
+      input.focus();
+    });
+    if(statusFilter) statusFilter.addEventListener('change', applyFilter);
+    if(leaderFilter) leaderFilter.addEventListener('change', applyFilter);
+  }
+})();
+</script>
+
+</body>
+</html>

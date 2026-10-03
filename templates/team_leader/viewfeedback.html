@@ -1,0 +1,1935 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>View Feedback</title>#}
+{#</head>#}
+{#<body>#}
+{##}
+{#{% for i in data %}#}
+{##}
+{#    <p>{{ i.ASSIGN_SUB.TEAM_MEMBER.name }}</p>#}
+{##}
+{#    <p>#}
+{#        <img src="{{ i.ASSIGN_SUB.TEAM_MEMBER.photo.url }}"#}
+{#             width="100"#}
+{#             height="100">#}
+{#    </p>#}
+{##}
+{#    <p>{{ i.feedback }}</p>#}
+{#    <a href="/myapp/deletefeedback/{{ i.id }}">delete</a>#}
+{##}
+{#{% empty %}#}
+{##}
+{#    <p>No feedback found.</p>#}
+{##}
+{#{% endfor %}#}
+{##}
+{#</body>#}
+{#</html>#}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>View Feedback · Calmora </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg: #FAF6FB;
+            --surface: #FFFFFF;
+
+            --ink: #2B2140;
+            --ink-soft: #6B5F82;
+            --ink-faint: #9B8FB3;
+
+            --teal: #6C3FC9;
+            --teal-dark: #4B2A94;
+
+            --sage: #B79CE8;
+            --sage-soft: #F0E9FB;
+
+            --coral: #E0457B;
+
+            --line: #E7DFF2;
+
+            --green: #1FB6A6;
+            --green-soft: #DBF6F1;
+
+            --sidebar-w: 250px;
+            --topbar-h: 64px;
+
+            --radius: 18px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+
+            background: var(--bg);
+
+            color: var(--ink);
+
+            font-family: 'Inter', system-ui, sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        button {
+            font-family: inherit;
+        }
+
+
+        /* =========================
+           MAIN LAYOUT
+        ========================= */
+
+        .shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            width: var(--sidebar-w);
+
+            flex: none;
+
+            background: linear-gradient(
+                190deg,
+                var(--teal-dark),
+                var(--teal) 70%
+            );
+
+            color: #fff;
+
+            display: flex;
+            flex-direction: column;
+
+            position: fixed;
+
+            top: 0;
+            bottom: 0;
+            left: 0;
+
+            z-index: 40;
+
+            transition: transform .22s ease;
+        }
+
+
+        .sb-brand {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 22px 22px 18px;
+        }
+
+
+        .sb-brand-mark {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.16);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: none;
+        }
+
+
+        .sb-brand-mark svg {
+            width: 18px;
+            height: 18px;
+
+            stroke: #fff;
+        }
+
+
+        .sb-brand-text {
+            font-size: 14.5px;
+            font-weight: 600;
+
+            line-height: 1.3;
+        }
+
+
+        .sb-brand-text span {
+            display: block;
+
+            font-size: 11.5px;
+            font-weight: 500;
+
+            opacity: .7;
+        }
+
+
+        .sb-nav {
+            flex: 1;
+
+            padding: 10px 14px;
+
+            overflow-y: auto;
+        }
+
+
+        .sb-section {
+            font-size: 11px;
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: .06em;
+
+            opacity: .55;
+
+            padding: 16px 10px 8px;
+        }
+
+
+        .sb-nav a {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.82);
+
+            padding: 11px 12px;
+
+            border-radius: 11px;
+
+            margin-bottom: 2px;
+
+            transition:
+                background .15s ease,
+                color .15s ease;
+        }
+
+
+        .sb-nav a svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: currentColor;
+
+            flex: none;
+        }
+
+
+        .sb-nav a:hover {
+            background: rgba(255,255,255,.10);
+
+            color: #fff;
+        }
+
+
+        .sb-nav a.active {
+            background: #fff;
+
+            color: var(--teal-dark);
+
+            font-weight: 600;
+        }
+
+
+        .sb-foot {
+            padding: 14px;
+
+            border-top: 1px solid rgba(255,255,255,.14);
+        }
+
+
+        .sb-foot a {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: rgba(255,255,255,.75);
+
+            padding: 11px 12px;
+
+            border-radius: 11px;
+        }
+
+
+        .sb-foot a svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: currentColor;
+        }
+
+
+        .sb-foot a:hover {
+            background: rgba(224,69,123,.25);
+
+            color: #fff;
+        }
+
+
+        /* =========================
+           MOBILE SIDEBAR
+        ========================= */
+
+        .sb-close {
+            display: none;
+
+            position: absolute;
+
+            top: 16px;
+            right: 14px;
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 9px;
+
+            border: none;
+
+            background: rgba(255,255,255,.14);
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+
+        .sb-close svg {
+            width: 16px;
+            height: 16px;
+
+            stroke: #fff;
+        }
+
+
+        .sb-scrim {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(43,33,64,.45);
+
+            z-index: 35;
+        }
+
+
+        .sb-scrim.open {
+            display: block;
+        }
+
+
+        /* =========================
+           MAIN COLUMN
+        ========================= */
+
+        .main-col {
+            flex: 1;
+
+            margin-left: var(--sidebar-w);
+
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /* =========================
+           TOPBAR
+        ========================= */
+
+        .topbar {
+            height: var(--topbar-h);
+
+            flex: none;
+
+            background: var(--surface);
+
+            border-bottom: 1px solid var(--line);
+
+            display: flex;
+            align-items: center;
+
+            gap: 16px;
+
+            padding: 0 26px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 20;
+        }
+
+
+        .sb-toggle {
+            display: none;
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 10px;
+
+            border: 1px solid var(--line);
+
+            background: #fff;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+        }
+
+
+        .sb-toggle svg {
+            width: 17px;
+            height: 17px;
+
+            stroke: var(--ink);
+        }
+
+
+        .topbar-title {
+            font-size: 15px;
+            font-weight: 600;
+
+            color: var(--ink);
+        }
+
+
+        .topbar-spacer {
+            flex: 1;
+        }
+
+
+        /* =========================
+           PROFILE DROPDOWN
+        ========================= */
+
+        .admin-menu {
+            position: relative;
+            flex: none;
+        }
+
+
+        .admin-trigger {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            background: #fff;
+
+            border: 1px solid var(--line);
+
+            padding: 6px 12px 6px 6px;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            font-size: 13.5px;
+            font-weight: 600;
+
+            color: var(--ink);
+        }
+
+
+        .admin-trigger:hover {
+            border-color: var(--teal);
+
+            background: var(--sage-soft);
+        }
+
+
+        .admin-avatar {
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                var(--teal),
+                var(--sage)
+            );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            flex: none;
+        }
+
+
+        .admin-avatar img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+
+        .initial {
+            font-size: 12px;
+            font-weight: 700;
+
+            color: #fff;
+        }
+
+
+        .admin-name {
+            max-width: 110px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .chevron {
+            width: 13px;
+            height: 13px;
+
+            stroke: var(--ink-soft);
+        }
+
+
+        .admin-dropdown {
+            position: absolute;
+
+            top: calc(100% + 10px);
+
+            right: 0;
+
+            min-width: 220px;
+
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 18px 36px -18px rgba(75,42,148,.35);
+
+            overflow: hidden;
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            transform: translateY(-6px);
+
+            transition:
+                opacity .18s ease,
+                transform .18s ease;
+        }
+
+
+        .admin-dropdown.open {
+            opacity: 1;
+
+            visibility: visible;
+
+            transform: translateY(0);
+        }
+
+
+        .admin-dropdown-head {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 14px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+
+        .admin-dropdown-head .admin-avatar {
+            width: 38px;
+            height: 38px;
+        }
+
+
+        .who .name {
+            display: block;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        .who .role {
+            display: block;
+
+            font-size: 12px;
+
+            color: var(--ink-soft);
+        }
+
+
+        .admin-dropdown a {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 14px;
+
+            font-size: 14px;
+
+            color: var(--ink);
+
+            border-bottom: 1px solid var(--line);
+        }
+
+
+        .admin-dropdown a:hover {
+            background: var(--sage-soft);
+        }
+
+
+        .admin-dropdown svg {
+            width: 15px;
+            height: 15px;
+
+            stroke: var(--teal);
+        }
+
+
+        .admin-dropdown .logout-item {
+            color: var(--coral);
+        }
+
+
+        .admin-dropdown .logout-item svg {
+            stroke: var(--coral);
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            padding: 32px 30px 60px;
+
+            max-width: 1000px;
+
+            width: 100%;
+
+            margin: 0 auto;
+        }
+
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 13.5px;
+            font-weight: 600;
+
+            color: var(--ink-soft);
+
+            padding: 8px 13px;
+
+            border-radius: 999px;
+
+            margin-bottom: 14px;
+        }
+
+
+        .back-link:hover {
+            background: var(--sage-soft);
+
+            color: var(--teal-dark);
+        }
+
+
+        .back-link svg {
+            width: 15px;
+            height: 15px;
+
+            stroke: currentColor;
+        }
+
+
+        .page-head {
+            margin-bottom: 24px;
+        }
+
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 30px;
+
+            margin: 0;
+
+            color: var(--teal-dark);
+        }
+
+
+        .page-head p {
+            margin: 6px 0 0;
+
+            color: var(--ink-soft);
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           FEEDBACK CARD
+        ========================= */
+
+        .feedback-list {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 16px;
+        }
+
+
+        .feedback-card {
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: var(--radius);
+
+            padding: 20px;
+
+            display: grid;
+
+            grid-template-columns: auto 1fr auto;
+
+            gap: 18px;
+
+            align-items: center;
+
+            box-shadow:
+                0 7px 24px rgba(75,42,148,.05);
+
+            transition:
+                transform .15s ease,
+                box-shadow .15s ease;
+        }
+
+
+        .feedback-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 12px 28px rgba(75,42,148,.09);
+        }
+
+
+        /* MEMBER PHOTO */
+
+        .member-photo {
+            width: 72px;
+            height: 72px;
+
+            border-radius: 16px;
+
+            object-fit: cover;
+
+            border: 3px solid var(--sage-soft);
+
+            display: block;
+        }
+
+
+        /* FEEDBACK CONTENT */
+
+        .feedback-content {
+            min-width: 0;
+        }
+
+
+        .member-name {
+            margin: 0 0 8px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: var(--ink);
+        }
+
+
+        .feedback-label {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            margin-bottom: 7px;
+
+            font-size: 10.5px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .05em;
+
+            color: var(--teal-dark);
+
+            background: var(--sage-soft);
+
+            padding: 5px 9px;
+
+            border-radius: 999px;
+        }
+
+
+        .feedback-label svg {
+            width: 12px;
+            height: 12px;
+
+            stroke: currentColor;
+        }
+
+
+        .feedback-text {
+            margin: 0;
+
+            font-size: 14px;
+
+            line-height: 1.65;
+
+            color: var(--ink-soft);
+
+            word-break: break-word;
+        }
+
+
+        /* DELETE */
+
+        .delete-btn {
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 9px 13px;
+
+            border-radius: 9px;
+
+            background: #FFF0F4;
+
+            color: var(--coral);
+
+            font-size: 12.5px;
+
+            font-weight: 600;
+
+            border: 1px solid #F8D6E1;
+
+            transition:
+                background .15s ease,
+                color .15s ease,
+                transform .15s ease;
+        }
+
+
+        .delete-btn svg {
+            width: 14px;
+            height: 14px;
+
+            stroke: currentColor;
+        }
+
+
+        .delete-btn:hover {
+            background: var(--coral);
+
+            color: #fff;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-card {
+            background: var(--surface);
+
+            border: 1px solid var(--line);
+
+            border-radius: var(--radius);
+
+            padding: 70px 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 7px 24px rgba(75,42,148,.05);
+        }
+
+
+        .empty-icon {
+            width: 62px;
+            height: 62px;
+
+            margin: 0 auto 16px;
+
+            border-radius: 17px;
+
+            background: var(--sage-soft);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .empty-icon svg {
+            width: 29px;
+            height: 29px;
+
+            stroke: var(--teal);
+        }
+
+
+        .empty-card h2 {
+            font-family: 'Fraunces', serif;
+
+            font-weight: 500;
+
+            font-size: 21px;
+
+            margin: 0 0 8px;
+        }
+
+
+        .empty-card p {
+            margin: 0;
+
+            color: var(--ink-soft);
+
+            font-size: 14px;
+        }
+
+
+        .page-foot {
+            margin-top: 25px;
+
+            text-align: center;
+
+            color: var(--ink-soft);
+
+            font-size: 12.5px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 960px) {
+
+            .sidebar {
+                transform: translateX(-100%);
+
+                box-shadow:
+                    0 0 60px rgba(0,0,0,.25);
+            }
+
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+
+            .sb-close {
+                display: flex;
+            }
+
+
+            .main-col {
+                margin-left: 0;
+            }
+
+
+            .sb-toggle {
+                display: flex;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .content {
+                padding: 26px 18px 45px;
+            }
+
+
+            .feedback-card {
+                grid-template-columns: auto 1fr;
+
+                gap: 15px;
+            }
+
+
+            .delete-btn {
+                grid-column: 1 / -1;
+
+                width: 100%;
+            }
+
+        }
+
+
+        @media (max-width: 520px) {
+
+            .topbar {
+                height: 60px;
+
+                padding: 0 15px;
+            }
+
+
+            .topbar-title {
+                font-size: 14px;
+            }
+
+
+            .admin-name,
+            .chevron {
+                display: none;
+            }
+
+
+            .admin-trigger {
+                padding-right: 7px;
+            }
+
+
+            .content {
+                padding: 23px 14px 40px;
+            }
+
+
+            .page-head h1 {
+                font-size: 26px;
+            }
+
+
+            .page-head p {
+                font-size: 13px;
+            }
+
+
+            .feedback-card {
+                display: block;
+
+                padding: 18px;
+            }
+
+
+            .member-photo {
+                width: 68px;
+                height: 68px;
+
+                margin-bottom: 14px;
+            }
+
+
+            .feedback-content {
+                margin-bottom: 16px;
+            }
+
+
+            .delete-btn {
+                display: flex;
+
+                width: 100%;
+
+                padding: 10px;
+            }
+
+
+            .empty-card {
+                padding: 55px 20px;
+            }
+
+        }
+
+
+        @media (max-width: 400px) {
+
+            .content {
+                padding-left: 11px;
+                padding-right: 11px;
+            }
+
+
+            .page-head h1 {
+                font-size: 24px;
+            }
+
+
+            .feedback-card {
+                padding: 15px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="shell">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <button
+            type="button"
+            class="sb-close"
+            id="sbClose"
+            aria-label="Close menu">
+
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+
+                <path d="M18 6 6 18"/>
+                <path d="M6 6l12 12"/>
+
+            </svg>
+
+        </button>
+
+
+        <div class="sb-brand">
+
+            <span class="sb-brand-mark">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M3 12c2-4 4-6 6-6s3 8 6 8 4-6 6-6"/>
+
+                </svg>
+
+            </span>
+
+
+            <span class="sb-brand-text">
+
+                Calmora
+
+                <span>
+                    Team Leader
+                </span>
+
+            </span>
+
+        </div>
+
+
+        <nav class="sb-nav">
+
+            <div class="sb-section">
+                Overview
+            </div>
+
+
+            <a href="/myapp/teamleaderhome_get/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M3 11l9-7 9 7"/>
+                    <path d="M5 10v10h14V10"/>
+
+                </svg>
+
+                Dashboard
+
+            </a>
+
+
+            <div class="sb-section">
+                Team
+            </div>
+
+
+            <a href="/myapp/viewteammember/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+
+                </svg>
+
+                Team members
+
+            </a>
+
+
+            <div class="sb-section">
+                Work
+            </div>
+
+
+            <a href="/myapp/viewassignedwork/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+
+                </svg>
+
+                Assigned work
+
+            </a>
+
+
+            <a href="/myapp/teamleaderviewstatus/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M3 3v18h18"/>
+                    <path d="M7 15l4-6 3 4 5-8"/>
+
+                </svg>
+
+                Status
+
+            </a>
+
+
+            <a href="/myapp/viewworkandfeedback/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+
+                </svg>
+
+                Work &amp; feedback
+
+            </a>
+
+
+            <!-- ACTIVE -->
+
+            <a
+                href="/myapp/viewmemberfeedback/"
+                class="active">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4-.9L3 21l1.9-4A8.5 8.5 0 1 1 21 11.5z"/>
+
+                </svg>
+
+                Feedback
+
+            </a>
+
+
+            <div class="sb-section">
+                Account
+            </div>
+
+
+            <a href="/myapp/teamleaderviewprofile/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M20 21a8 8 0 1 0-16 0"/>
+                    <circle cx="12" cy="8" r="5"/>
+
+                </svg>
+
+                View profile
+
+            </a>
+
+        </nav>
+
+
+        <div class="sb-foot">
+
+            <a href="/myapp/logout_get/">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                    <path d="M16 17l5-5-5-5"/>
+                    <path d="M21 12H9"/>
+
+                </svg>
+
+                Log out
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <div class="sb-scrim" id="sbScrim"></div>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="main-col">
+
+
+        <!-- TOP NAVBAR -->
+
+        <header class="topbar">
+
+            <button
+                type="button"
+                class="sb-toggle"
+                id="sbToggle"
+                aria-label="Open menu">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M4 7h16"/>
+                    <path d="M4 12h16"/>
+                    <path d="M4 17h16"/>
+
+                </svg>
+
+            </button>
+
+
+            <div class="topbar-title">
+                Feedback
+            </div>
+
+
+            <div class="topbar-spacer"></div>
+
+
+            <!-- PROFILE -->
+
+            <div class="admin-menu" id="adminMenu">
+
+                <button
+                    type="button"
+                    class="admin-trigger"
+                    id="adminTrigger"
+                    aria-expanded="false">
+
+                    <span class="admin-avatar">
+
+                        {% if pro.photo %}
+
+                            <img
+                                src="{{ pro.photo.url }}"
+                                alt="{{ pro.name }}">
+
+                        {% else %}
+
+                            <span class="initial">
+                                {{ pro.name|default:"?"|slice:":1"|upper }}
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+
+                    <span class="admin-name">
+                        {{ pro.name }}
+                    </span>
+
+
+                    <svg
+                        class="chevron"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke-width="2.4"
+                        stroke-linecap="round"
+                        stroke-linejoin="round">
+
+                        <path d="M6 9l6 6 6-6"/>
+
+                    </svg>
+
+                </button>
+
+
+                <div
+                    class="admin-dropdown"
+                    id="adminDropdown">
+
+
+                    <div class="admin-dropdown-head">
+
+                        <span class="admin-avatar">
+
+                            {% if pro.photo %}
+
+                                <img
+                                    src="{{ pro.photo.url }}"
+                                    alt="{{ pro.name }}">
+
+                            {% else %}
+
+                                <span class="initial">
+                                    {{ pro.name|default:"?"|slice:":1"|upper }}
+                                </span>
+
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="who">
+
+                            <span class="name">
+                                {{ pro.name }}
+                            </span>
+
+                            <span class="role">
+                                Team Leader
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <a href="/myapp/teamleaderviewprofile/">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M20 21a8 8 0 1 0-16 0"/>
+                            <circle cx="12" cy="8" r="5"/>
+
+                        </svg>
+
+                        View profile
+
+                    </a>
+
+
+                    <a href="/myapp/teamleaderchangepassword_get/">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <rect x="4" y="11"
+                                  width="16"
+                                  height="10"
+                                  rx="2"/>
+
+                            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+
+                        </svg>
+
+                        Change password
+
+                    </a>
+
+
+                    <a
+                        href="/myapp/logout_get/"
+                        class="logout-item">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <path d="M16 17l5-5-5-5"/>
+                            <path d="M21 12H9"/>
+
+                        </svg>
+
+                        Log out
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="content">
+
+
+            <a
+                href="/myapp/teamleaderhome_get/"
+                class="back-link">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+
+                </svg>
+
+                Back to dashboard
+
+            </a>
+
+
+            <div class="page-head">
+
+                <h1>
+                    Team Member Feedback
+                </h1>
+
+                <p>
+                    Review feedback submitted by your team members.
+                </p>
+
+            </div>
+
+
+            {% if data %}
+
+                <div class="feedback-list">
+
+                    {% for i in data %}
+
+                        <div class="feedback-card">
+
+
+                            <!-- MEMBER PHOTO -->
+
+                            <div>
+
+                                <img
+                                    class="member-photo"
+                                    src="{{ i.ASSIGN_SUB.TEAM_MEMBER.photo.url }}"
+                                    alt="{{ i.ASSIGN_SUB.TEAM_MEMBER.name }}">
+
+                            </div>
+
+
+                            <!-- FEEDBACK -->
+
+                            <div class="feedback-content">
+
+                                <h2 class="member-name">
+                                    {{ i.ASSIGN_SUB.TEAM_MEMBER.name }}
+                                </h2>
+
+
+                                <div class="feedback-label">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+
+                                        <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4-.9L3 21l1.9-4A8.5 8.5 0 1 1 21 11.5z"/>
+
+                                    </svg>
+
+                                    Feedback
+
+                                </div>
+
+
+                                <p class="feedback-text">
+                                    {{ i.feedback }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- DELETE -->
+
+                            <div>
+
+                                <a
+                                    class="delete-btn"
+                                    href="/myapp/deletefeedback/{{ i.id }}">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round">
+
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6l-1 14H6L5 6"/>
+                                        <path d="M10 11v6"/>
+                                        <path d="M14 11v6"/>
+                                        <path d="M9 6V4h6v2"/>
+
+                                    </svg>
+
+                                    Delete
+
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="empty-card">
+
+                    <div class="empty-icon">
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke-width="1.8"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 8.5 8.5 0 0 1-4-.9L3 21l1.9-4A8.5 8.5 0 1 1 21 11.5z"/>
+
+                        </svg>
+
+                    </div>
+
+
+                    <h2>
+                        No feedback found
+                    </h2>
+
+
+                    <p>
+                        Feedback submitted by your team members will appear here.
+                    </p>
+
+                </div>
+
+
+            {% endif %}
+
+
+            <footer class="page-foot">
+                Calmora  · Team Leader console
+            </footer>
+
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<script>
+
+(function () {
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const toggle =
+        document.getElementById("sbToggle");
+
+    const close =
+        document.getElementById("sbClose");
+
+    const scrim =
+        document.getElementById("sbScrim");
+
+
+    function openSidebar() {
+
+        sidebar.classList.add("open");
+
+        scrim.classList.add("open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("open");
+
+        scrim.classList.remove("open");
+
+    }
+
+
+    toggle.addEventListener(
+        "click",
+        openSidebar
+    );
+
+
+    close.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    scrim.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    /* =========================
+       PROFILE DROPDOWN
+    ========================= */
+
+    const adminMenu =
+        document.getElementById("adminMenu");
+
+    const adminTrigger =
+        document.getElementById("adminTrigger");
+
+    const adminDropdown =
+        document.getElementById("adminDropdown");
+
+
+    adminTrigger.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            adminDropdown.classList.toggle("open");
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (!adminMenu.contains(event.target)) {
+
+                adminDropdown.classList.remove("open");
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       ESCAPE KEY
+    ========================= */
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closeSidebar();
+
+                adminDropdown.classList.remove("open");
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       CLOSE SIDEBAR ON LINK
+    ========================= */
+
+    const links =
+        document.querySelectorAll(".sb-nav a");
+
+
+    links.forEach(function (link) {
+
+        link.addEventListener(
+            "click",
+            function () {
+
+                if (window.innerWidth <= 960) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /* =========================
+       RESET ON RESIZE
+    ========================= */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (window.innerWidth > 960) {
+
+                closeSidebar();
+
+
+            }
+
+        }
+    );
+
+})();
+
+</script>
+
+</body>
+</html>

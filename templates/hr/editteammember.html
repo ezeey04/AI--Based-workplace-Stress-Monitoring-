@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edit Team Member · Calmora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF6FB;
+    --surface:#FFFFFF;
+    --ink:#2B2140;
+    --ink-soft:#6B5F82;
+    --teal:#6C3FC9;
+    --teal-dark:#4B2A94;
+    --sage:#B79CE8;
+    --sage-soft:#F0E9FB;
+    --coral:#E0457B;
+    --coral-soft:#FCE7EF;
+    --line:#E7DFF2;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 20px;
+  }
+
+  .form-card{
+    width:100%;
+    max-width:520px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:36px 32px;
+    box-shadow:0 24px 48px -30px rgba(75,42,148,.35);
+  }
+
+  .eyebrow{
+    display:inline-block; font-size:12px; font-weight:600; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--teal); background:var(--sage-soft);
+    padding:4px 10px; border-radius:999px; margin-bottom:14px;
+  }
+  h1{
+    font-family:'Fraunces',serif; font-weight:600; font-size:24px;
+    margin:0 0 8px; color:var(--teal-dark);
+  }
+  .sub{ margin:0 0 26px; font-size:14px; color:var(--ink-soft); line-height:1.5; }
+
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:520px){ .row{ grid-template-columns:1fr; } }
+
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block; font-size:13px; font-weight:600; color:var(--ink);
+    margin-bottom:7px;
+  }
+  .field .req{ color:var(--coral); }
+  .hint{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  input[type="date"],
+  select{
+    width:100%; font-family:inherit; font-size:14px; color:var(--ink);
+    background:#fff; border:1.5px solid var(--line); border-radius:12px;
+    padding:12px 14px;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  select{
+    appearance:none;
+    background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5F82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right 14px center;
+    background-size:16px;
+    padding-right:40px;
+    cursor:pointer;
+  }
+  input:hover, select:hover{ border-color:var(--sage); }
+  input:focus, select:focus{
+    outline:none; border-color:var(--teal); box-shadow:0 0 0 4px var(--sage-soft);
+  }
+
+  .field.error input, .field.error select{ border-color:var(--coral); }
+  .field.error input:focus, .field.error select:focus{ box-shadow:0 0 0 4px var(--coral-soft); }
+  .error-msg{
+    display:none; align-items:center; gap:6px;
+    font-size:12.5px; color:var(--coral); margin-top:6px; font-weight:500;
+  }
+  .field.error .error-msg{ display:flex; }
+  .error-msg svg{ width:13px; height:13px; stroke:var(--coral); flex:none; }
+
+  /* Photo */
+  .photo-row{ display:flex; align-items:center; gap:16px; margin-bottom:6px; }
+  .photo-preview{
+    width:64px; height:64px; border-radius:50%;
+    object-fit:cover; border:2px solid var(--sage-soft); flex:none; display:block;
+  }
+  .photo-preview-fallback{
+    width:64px; height:64px; border-radius:50%;
+    background:var(--sage-soft); color:var(--teal-dark);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600; font-size:20px; flex:none;
+  }
+  .file-input-wrap{ flex:1; min-width:0; }
+  input[type="file"]{
+    width:100%; font-family:inherit; font-size:13px; color:var(--ink-soft);
+    background:#fff; border:1.5px dashed var(--line); border-radius:12px;
+    padding:10px 12px; cursor:pointer;
+  }
+  input[type="file"]:hover{ border-color:var(--sage); }
+  input[type="file"]::file-selector-button{
+    font-family:inherit; font-size:12.5px; font-weight:600; color:#fff;
+    background:var(--teal); border:none; border-radius:8px;
+    padding:7px 12px; margin-right:10px; cursor:pointer;
+  }
+
+  .actions{ display:flex; gap:12px; margin-top:8px; flex-wrap:wrap; }
+  button[type="submit"]{
+    flex:1; min-width:160px; font-family:inherit; font-size:14.5px; font-weight:600; color:#fff;
+    background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+    padding:13px 18px; border-radius:12px; border:none; cursor:pointer;
+    box-shadow:0 10px 24px -12px rgba(75,42,148,.55);
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  button[type="submit"]:hover{ transform:translateY(-1px); box-shadow:0 14px 28px -12px rgba(75,42,148,.65); }
+  button[type="submit"]:disabled{ opacity:.6; cursor:not-allowed; transform:none; box-shadow:none; }
+
+  .back-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13px; font-weight:600; color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .back-link svg{ width:14px; height:14px; stroke:currentColor; }
+  .back-link:hover{ color:var(--teal-dark); }
+
+  @media (max-width:480px){
+    .form-card{ padding:28px 22px; border-radius:16px; }
+    h1{ font-size:21px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    button[type="submit"], input, select{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="form-card">
+    <a class="back-link" href="/myapp/viewteammember_get/">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to team members
+    </a>
+
+    <span class="eyebrow">HR · Team members</span>
+    <h1>Edit team member</h1>
+    <p class="sub">Update {{ data.name }}'s details below.</p>
+
+    <form action="/myapp/editteammember_post/" method="post" enctype="multipart/form-data" id="editForm" novalidate>
+      {% csrf_token %}
+      <input name="id" type="hidden" value="{{ data.id }}">
+
+      <div class="field" id="nameField">
+        <label for="name">Name <span class="req">*</span></label>
+        <input type="text" name="name" id="name" value="{{ data.name }}" required minlength="2">
+        <div class="error-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          Please enter a name (at least 2 characters).
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field" id="emailField">
+          <label for="email">Email <span class="req">*</span></label>
+          <input type="email" name="email" id="email" value="{{ data.email }}" required>
+          <div class="error-msg">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Please enter a valid email address.
+          </div>
+        </div>
+
+        <div class="field" id="phoneField">
+          <label for="phone">Phone <span class="req">*</span></label>
+          <input type="tel" inputmode="numeric" name="phone" id="phone" value="{{ data.phone }}" required pattern="[0-9]{7,15}">
+          <div class="error-msg">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Enter a valid phone number (digits only).
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="photoField">
+        <label>Photo</label>
+        <div class="photo-row">
+          {% if data.photo %}
+            <img class="photo-preview" id="photoPreview" src="{{ data.photo.url }}" alt="{{ data.name }}">
+          {% else %}
+            <span class="photo-preview-fallback" id="photoFallback">{{ data.name|slice:":1" }}</span>
+            <img class="photo-preview" id="photoPreview" style="display:none;" alt="{{ data.name }}">
+          {% endif %}
+          <div class="file-input-wrap">
+            <input type="file" name="photo" id="photo" accept="image/*">
+            <div class="hint">Leave empty to keep the current photo.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field" id="genderField">
+          <label for="gender">Gender <span class="req">*</span></label>
+          <select name="gender" id="gender" required>
+            <option value="" {% if not data.gender %}selected{% endif %} disabled>Select gender</option>
+            <option value="male" {% if data.gender|lower == "male" %}selected{% endif %}>Male</option>
+            <option value="female" {% if data.gender|lower == "female" %}selected{% endif %}>Female</option>
+          </select>
+          <div class="error-msg">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Please select a gender.
+          </div>
+        </div>
+
+        <div class="field" id="dobField">
+          <label for="dob">Date of birth <span class="req">*</span></label>
+          <input type="date" name="dob" id="dob" value="{{ data.dob|date:'Y-m-d' }}" max="{{ dob }}" required>
+          <div class="error-msg">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            Please enter a valid date of birth.
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="qualificationField">
+        <label for="qualification">Qualification <span class="req">*</span></label>
+        <input type="text" name="qualification" id="qualification" value="{{ data.qualification }}" required>
+        <div class="error-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          Please enter a qualification.
+        </div>
+      </div>
+
+      <div class="field" id="experienceField">
+        <label for="experience">Experience <span class="req">*</span></label>
+        <input type="text" name="experience" id="experience" value="{{ data.experience }}" required>
+        <div class="error-msg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+          Please enter experience details.
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" id="submitBtn">Save changes</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+(function(){
+  const form = document.getElementById('editForm');
+  const fields = {
+    nameField:   { el: document.getElementById('name'),   check: v => v.trim().length >= 2 },
+    emailField:  { el: document.getElementById('email'),  check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+    phoneField:  { el: document.getElementById('phone'),  check: v => /^[0-9]{7,15}$/.test(v.trim()) },
+    genderField: { el: document.getElementById('gender'), check: v => v !== '' },
+    dobField:    { el: document.getElementById('dob'),    check: v => !!v },
+    qualificationField:{
+  el: document.getElementById('qualification'),
+  check: v => /^[A-Za-z .,()]+$/.test(v.trim()) && v.trim().length >= 2
+},
+    experienceField:   { el: document.getElementById('experience'),   check: v => v.trim().length > 0 }
+  };
+
+  function setError(id, hasError){
+    document.getElementById(id).classList.toggle('error', hasError);
+  }
+
+  function validateField(id){
+    const { el, check } = fields[id];
+    const ok = check(el.value);
+    setError(id, !ok);
+    return ok;
+  }
+
+  Object.keys(fields).forEach(id => {
+    const el = fields[id].el;
+    el.addEventListener('input', () => validateField(id));
+    el.addEventListener('change', () => validateField(id));
+  });
+
+  // Live photo preview
+  const photoInput = document.getElementById('photo');
+  const preview = document.getElementById('photoPreview');
+  const fallback = document.getElementById('photoFallback');
+  photoInput.addEventListener('change', function(){
+    const file = photoInput.files && photoInput.files[0];
+    if(file){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        if(fallback) fallback.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  form.addEventListener('submit', function(e){
+    let valid = true;
+    Object.keys(fields).forEach(id => {
+      if(!validateField(id)) valid = false;
+    });
+    if(!valid){
+      e.preventDefault();
+      const firstError = form.querySelector('.field.error input, .field.error select');
+      if(firstError) firstError.focus();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
